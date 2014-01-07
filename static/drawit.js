@@ -1,7 +1,7 @@
 var room = false;
 var socket;
 var username;
-var url = "http://hjem.carlsen.nl:8787";
+var url;
 var canvas;
 
 // Stolen from stack-overflow
@@ -103,6 +103,11 @@ function selectTool(toolName) {
 }
 
 $(function() {
+	url = "http://" + drawitconfig.url+":"+drawitconfig.port;
+	console.log("START");
+	console.log(url);
+	console.dir(drawitconfig);
+	console.log("END");
 	room = params['room'];
 	if(!room)
 		askForRoomName();
