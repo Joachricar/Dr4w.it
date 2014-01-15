@@ -22,7 +22,7 @@ app.use('/', express.static(__dirname+'/static'));
 server = app.listen(drawitconfig.port);
 
 
-io = require('socket.io').listen(server);
+io = require('socket.io').listen(server, {log: false});
 io.on('connection', function(socket) {
 	socket.emit('chat', { sender: 'Dr4w.it', message: 'Heisann!' });
 
