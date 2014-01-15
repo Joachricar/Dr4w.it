@@ -1,5 +1,5 @@
 var drawitconfig = {
 	"url": "Dr4w.it",
-	"port": "80",
+	"port": process.env.PORT || 5000,
 	"name": "Dr4w.it"
 };
