@@ -210,7 +210,7 @@ $(function() {
 
 	$("<a>").attr('href', url).text("Dr4w.it").appendTo("#footerTitle");
 	
-	$("#clientSideFirst").attr("checked", clientSideFirst);
+	$("#clientSideFirst").attr("checked", clientSideFirst?"checked":"unchecked");
 	$("#clientSideFirst").change(function() {
 		clientSideFirst = $(this).is(":checked");
 		$.cookie("clientSideFirst", clientSideFirst);
