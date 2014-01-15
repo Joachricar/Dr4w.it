@@ -3,10 +3,11 @@
 		<title>Drawit</title>
 		<link rel="stylesheet" href="stil.css"/>
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
-		<script src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-		<script src="/jscolor/jscolor.js"></script>
+		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script type="text/javascript" src="/jscolor/jscolor.js"></script>
 		<script type="text/javascript" src="drawitconfig.js"></script>
 		<script type="text/javascript" src="drawit.js"></script>
 	</head>
@@ -42,6 +43,8 @@
 			</div>
 			<div id="toolMenuWrapper" class="windowWrapper">
 				<div id="toolMenuColorSelector">
+					<input type="checkbox" id="clientSideFirst" name="clientSideFirst"/>
+					<label for="clientSideFirst">Draw locally first</label>
 					<input class="color {hash:true}" id="fgColor"/>
 					<input class="color {hash:true}" id="bgColor"/>
 				</div>

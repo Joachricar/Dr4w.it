@@ -12,7 +12,6 @@ include('static/drawitconfig.js');
 app.get('/toollist.json', function(req, res) {
     res.setHeader('Content-Type', 'text/html');
     var data = fs.readdirSync(toolListPath);
-    console.dir(data);
     res.end(JSON.stringify(data) + "\n", null, 3);
 });
 

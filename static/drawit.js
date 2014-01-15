@@ -30,6 +30,7 @@ function sendMessage(message) {
 
 var tools = [];
 var selectedTool;
+var clientSideFirst = $.cookie("clientSideFirst");
 
 function Canvas() {
 	var self = this;
@@ -71,6 +72,10 @@ function Canvas() {
 			room: room,
 			data: data
 		};
+
+		if(clientSideFirst) {
+			self.receiveData(fullData);
+		}
 
 		socket.emit('event', fullData);
 	}
@@ -203,6 +208,11 @@ $(function() {
 	}).val(canvas.bgColor);
 
 	$("<a>").attr('href', url).text(drawitconfig.name).appendTo("#footerTitle");
+	
+	$("#clientSideFirst").attr("checked", clientSideFirst).change(function() {
+		clientSideFirst = $(this).is(":checked");
+		$.cookie("clientSideFirst", clientSideFirst);
+	});
 });
 
 
