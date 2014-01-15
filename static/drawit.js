@@ -103,7 +103,10 @@ function selectTool(toolName) {
 }
 
 $(function() {
-	url = "http://" + drawitconfig.url+":"+drawitconfig.port;
+	var port = window.location.port;
+	var domain = window.location.hostname;
+
+	url = "http://" + domain + (port?":"+port:"");
 	console.log("START");
 	console.log(url);
 	console.dir(drawitconfig);
