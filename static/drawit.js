@@ -75,6 +75,7 @@ function Canvas() {
 
 		if(clientSideFirst) {
 			self.receiveData(fullData);
+			fullData.b = 1;
 		}
 
 		socket.emit('event', fullData);

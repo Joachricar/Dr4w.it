@@ -35,6 +35,9 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('event', function(data) {
-		io.sockets.in(data.room).emit('event', data);
+		if(data.b)
+			socket.broadcast.to(data.room).emit('event', data);
+		else
+			io.sockets.in(data.room).emit('event', data);
 	});
 });
