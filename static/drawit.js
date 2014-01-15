@@ -158,6 +158,8 @@ $(function() {
 		},
 		error: function(XMLHttpRequest, stat, error) {
 			alert("Status: " + stat); alert("Error: " + error);
+			console.dir(stat);
+			console.dir(error);
 		}
 	});
 
@@ -196,6 +198,8 @@ $(function() {
 	$("#bgColor").change(function() {
 		canvas.bgColor = $("#bgColor").val();
 	}).val(canvas.bgColor);
+
+	$("<a>").attr('href', url).text(drawitconfig.name).appendTo("#footerTitle");
 });
 
 

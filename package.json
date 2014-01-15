@@ -1,10 +1,31 @@
 {
-	"name": "drawit",
-	"description": "Multiplayer drawing",
-	"version": "0.0.1",
-	"private": false,
-	"dependencies": {
-		"express": "3.x",
-		"socket.io": "0.9.x"
-	}
+  "name": "Dr4w.it",
+  "description": "Multiplayer drawing",
+  "version": "0.1.0",
+  "private": false,
+  "dependencies": {
+    "express": "3.x",
+    "socket.io": "0.9.x"
+  },
+  "main": "main.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Joachricar/Dr4w.it"
+  },
+  "keywords": [
+    "drawit",
+    "joasoft"
+  ],
+  "author": "Joachim Carlsen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Joachricar/Dr4w.it/issues"
+  },
+  "engines": {
+	"node": "0.10.x"
+  }
 }
