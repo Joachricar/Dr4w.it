@@ -207,11 +207,13 @@ $(function() {
 		canvas.bgColor = $("#bgColor").val();
 	}).val(canvas.bgColor);
 
-	$("<a>").attr('href', url).text(drawitconfig.name).appendTo("#footerTitle");
+	$("<a>").attr('href', url).text("Dr4w.it").appendTo("#footerTitle");
 	
-	$("#clientSideFirst").attr("checked", clientSideFirst).change(function() {
+	$("#clientSideFirst").attr("checked", clientSideFirst);
+	$("#clientSideFirst").change(function() {
 		clientSideFirst = $(this).is(":checked");
 		$.cookie("clientSideFirst", clientSideFirst);
+		console.log(clientSideFirst);
 	});
 });
 
