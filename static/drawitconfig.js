@@ -1,5 +1,5 @@
 var drawitconfig = {
-	"url": "hjem.carlsen.nl",
-	"port": "8787",
+	"url": "Dr4w.it",
+	"port": "80",
 	"name": "Dr4w.it"
 };
