@@ -21,7 +21,7 @@ $(function() {
     }).dialog("close");
     
     $("#ButtonCreateRoom").click(function(e) {
-        $("#WaitingDialog").dialog("close");
+        $("#WaitingDialog").dialog("open");
         socket.emit('createRoom', { room: $("#InputRoomName").val(), pw: $("#InputPassword").val()});
     });
     
