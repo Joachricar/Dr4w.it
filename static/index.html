@@ -1,8 +1,12 @@
 <html>
 	<head>
 		<title>Drawit</title>
-		<link rel="stylesheet" href="stil.css"/>
+		<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin"/>
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+		<link rel="stylesheet" href="default.css" />
+		<link rel="stylesheet" href="stil.css"/>
+		
+		
 		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
@@ -13,47 +17,71 @@
 	</head>
 
 	<body>
-		<div id="div_main">
-			<canvas id="canvas">
-				u no has canvas
-			</canvas>
+	    <div id="mainContent">
+		    <div id="div_main">
+			    <canvas id="canvas">
+				    u no has canvas
+			    </canvas>
+		    </div>
+		    <div id="footer">
+			    <div id="footerWindowMenu">
+			    </div>
+			    <p id="footerTitle"></p>	
+		    </div>
+		    <div id="div_chat" class="window ui-widget-content" title="Chat">
+			    <div id="chatHeader" class="ui-widget-header windowHeader">
+				    <p class="windowHeaderText"></p>
+					    <button id="chatHeaderClose" class="windowClose windowButton"></button>
+					    <button id="chatHeaderHide" class="windowHide windowButton"></button>
+			    </div>
+			    <div id="chatIOWrapper" class="windowWrapper">
+				    <textarea cols="30" rows="15" id="chatOutput"></textarea>
+				    <input type="text" cols="30" id="chatInput" placeholder="Chat"></input>
+			    </div>
+		    </div>
+		    <div id="toolMenu" class="window ui-widget-content" title="Tools">
+			    <div id="toolMenuHeader" class="ui-widget-header windowHeader">
+				    <p class="windowHeaderText"></p>
+				    <button id="toolMenuClose" class="windowClose windowButton"></button>
+				    <button id="toolMenuHide" class="windowHide windowButton"></button>
+				    <!---<button id="toolMenuRefresh" class="windowRefresh windowButton"></button>-->
+			    </div>
+			    <div id="toolMenuWrapper" class="windowWrapper">
+				    <div id="toolMenuColorSelector">
+					    <input type="checkbox" id="clientSideFirst" name="clientSideFirst" title="Don't wait for server to draw"/>
+					    <label for="clientSideFirst">Draw locally first</label>
+					    <input class="color {hash:true}" id="fgColor"/>
+					    <button id="flipColorButton" title="Switch colors"></button>
+					    <input class="color {hash:true}" id="bgColor"/>
+				    </div>
+				    <div id="toolMenuSelector">
+				    </div>
+				    <hr/>
+				    <div id="toolSettings">
+				    </div>
+			    </div>
+		    </div>
+		    <div id="div_part_list" class="window ui-widget-content" title="Participants">
+			    <div id="partListHeader" class="ui-widget-header windowHeader">
+				    <p class="windowHeaderText"></p>
+				    <button id="partListClose" class="windowClose windowButton"></button>
+				    <button id="partListHide" class="windowHide windowButton"></button>
+			    </div>
+			    <div id="partListWrapper" class="windowWrapper">
+				    <ul id="partListWrapperList">
+
+				    </ul>
+			    </div>
+		    </div>
 		</div>
-		<div id="footer">
-			<div id="footerWindowMenu">
-			</div>
-			
-			<p id="footerTitle"></p>	
+		<div id="NameDialog" title="Enter your name">
+		    <input type="text" id="InputUsername" placeholder="Name" class="fpInput"/>
+		    <button class="fpButton" id="ButtonJoinRoom">Join!</button>
 		</div>
-		<div id="div_chat" class="window ui-widget-content" title="Chat">
-			<div id="chatHeader" class="ui-widget-header windowHeader">
-				<p class="windowHeaderText"></p>
-					<button id="chatHeaderClose" class="windowClose windowButton"></button>
-					<button id="chatHeaderHide" class="windowHide windowButton"></button>
-			</div>
-			<div id="chatIOWrapper" class="windowWrapper">
-				<textarea cols="30" rows="15" id="chatOutput"></textarea>
-				<input type="text" cols="30" id="chatInput" placeholder="Schreiben sie eine meldüng"></input>
-			</div>
-		</div>
-		<div id="toolMenu" class="window ui-widget-content" title="Tools">
-			<div id="toolMenuHeader" class="ui-widget-header windowHeader">
-				<p class="windowHeaderText"></p>
-					<button id="toolMenuClose" class="windowClose windowButton"></button>
-					<button id="toolMenuHide" class="windowHide windowButton"></button>
-			</div>
-			<div id="toolMenuWrapper" class="windowWrapper">
-				<div id="toolMenuColorSelector">
-					<input type="checkbox" id="clientSideFirst" name="clientSideFirst"/>
-					<label for="clientSideFirst">Draw locally first</label>
-					<input class="color {hash:true}" id="fgColor"/>
-					<input class="color {hash:true}" id="bgColor"/>
-				</div>
-				<div id="toolMenuSelector">
-				</div>
-				<hr/>
-				<div id="toolSettings">
-				</div>
-			</div>
+		<div id="PasswordDialog" title="Enter Password">
+		    <p id="PasswordDialogMessage"></p>
+		    <input type="text" id="InputPassword" placeholder="Password" class="fpInput"/>
+		    <button class="fpButton" id="ButtonPassword">Submit</button>
 		</div>
 	</body>
 </html>

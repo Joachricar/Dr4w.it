@@ -1,0 +1,23 @@
+body {
+    text-align: center; /* Center in IE */
+    background-color: #5B7B90;
+}
+
+#main {
+   text-align: left; /* reset text-align for IE */
+   margin: 0 auto; /* Center in other browsers */
+   width: 400px;
+   border: solid 3px #98959E;
+   background-color: #FFC675;
+   border-radius: 5px;
+   padding: 40px;
+   margin-top: 80px;
+}
+
+#welcomeHeader {
+    color: #5B7B90;
+}
+
+#welcomeMessage {
+    color: #98959E;
+}

@@ -10,22 +10,25 @@ body {
 }
 
 #footer {
-	border-top: solid 1px black;
+	border-top: solid 1px #FFC675;
     position: fixed;
     bottom: 0%;
 	left: 0%;
 	height:40px;
 	width: 100%;
-	background-color: lightblue;
-
+	background-color: #5B7B90;
+	font-weight: bold;
+    color: #FFC675;
 }
 
 .window {
+    background: none;
 	position: absolute;
-	border: solid 1px black;
+	border: solid 2px #5B7B90;
 	width: 250px;
 	padding: 5px;
 	min-height: 40px;
+	background-color: #FFC675;
 }
 
 #chatOutput {
@@ -42,6 +45,8 @@ body {
 	padding: 0em;
 	float: left;
 	margin: 0 10px 10px 0;
+	background: none;
+	background-color: #5B7B90;
 }
 
 .windowHeaderText {
@@ -57,8 +62,14 @@ body {
 	margin-top: 5px;
 }
 
-.selected-tool-button {
-	border: solid 1px red;
+#flipColorButton {
+    background-image: url("/images/flipColors.png");
+    background-color: #5B7B90;
+    border: solid 1px #FFC675;
+    border-radius: 4px;
+    height: 30px;
+    width: 30px;
+    float: right;
 }
 
 #canvas {
@@ -75,10 +86,37 @@ body {
 	right: 0;
 	bottom: 0;
 	width: 90%;
+	color: #FFC675;
 }
 
 .footerWindowMenuButton {
 	float: right;
 	margin: 5px;
-	color: black;
+	color: #FFC675;
 }
+
+a {
+    margin-left: 10px;
+    margin-bottom: 5px;
+    text-decoration: none;
+    color: #FFC675;
+}
+
+#toolMenuSelector {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.tool-button {
+    background-color: #98959E;
+    border: solid 1px #98959E;
+}
+
+.selected-tool-button {
+	border: solid 1px #FFC675;
+}
+
+ul {
+    list-style-type: square;
+}
+

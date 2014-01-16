@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <title>Dr4w.it</title>
+        
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin"/>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+        <link rel="stylesheet" href="default.css" />
+        <link rel="stylesheet" href="frontCSS.css" />
+        
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
+        <script type="text/javascript" src="front.js"></script>
+    </head>
+    
+    <body>
+        <div id="main">
+            <div id="newRoomWrapper">
+                <h1 id="welcomeHeader">Welcome to Dr4w.it</h1>
+                <h2 id="welcomeMessage">Create a new room</h2>
+                <input type="text" placeholder="Room name" id="InputRoomName" class="fpInput"></input>
+                <input type="password" placeholder="Password(optional)" id="InputPassword" class="fpInput"></input>
+                <button id="ButtonCreateRoom" class="fpButton">Create Room!</button>
+            </div>
+        </div>
+        
+        <div id="ExistingRoomDialog" title="Room exist">
+            <p>This room already exist <span id="WithPW"></span></p>
+            <button class="fpButton" id="JoinRoom">Join this</button>
+            <button class="fpButton" id="CloseDialog">or create another</button>
+        </div>
+    </body>
+</html>

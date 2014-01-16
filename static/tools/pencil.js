@@ -7,7 +7,8 @@ function Pencil() {
 	self.icon = "/images/icons/pencil.png";
 	self.mouse = false;	
 	self.prevPos = null;
-
+    self.smooth = true;
+    
 	self.buildMenu = function() {
 		var div = $("<div class='tool-settings'>");
 		$("<input type='number' id='pencil-width' value='" + self.width + "'>").change(function() {
@@ -23,6 +24,7 @@ function Pencil() {
 				self.prevPos = { x: e.pageX, y: e.pageY };
 				break;
 			case "up":
+			case "leave":
 				self.mouse = false;
 				break;
 			case "move":
@@ -44,12 +46,28 @@ function Pencil() {
 	}
 
 	self.draw = function(data) {
+	    // Draw regular
 		self.canvas.ctx.beginPath();
 		self.canvas.ctx.moveTo(data.start.x, data.start.y);
 		self.canvas.ctx.lineTo(data.end.x, data.end.y);
 		self.canvas.ctx.lineWidth = data.config.width;
 		self.canvas.ctx.strokeStyle = data.config.color;
 		self.canvas.ctx.stroke();
+		
+		// draw circle in end of line
+		if(self.smooth && +data.config.width > 1) {
+		    self.canvas.ctx.beginPath();
+		    var cx = Math.floor(data.end.x);
+		    var cy = Math.floor(data.end.y);
+		
+		    
+		    self.canvas.ctx.arc(cx, cy, data.config.width/2, 0, 2*Math.PI, false);
+            self.canvas.ctx.fillStyle = data.config.color;
+			self.canvas.ctx.fill();
+		    //self.canvas.ctx.strokeStyle = data.config.color;
+		    //self.canvas.ctx.lineWidth = data.config.width;
+		    //self.canvas.ctx.stroke();
+		}
 	}
 
 	self.setCanvas = function(c) {

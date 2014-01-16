@@ -16,13 +16,20 @@ function getQueryParams(qs) {
 	return params;
 }
 
+function askForRoomName() {
+	window.location.href = url + "/front.html";
+}
+
+var port = window.location.port;
+var domain = window.location.hostname;
+url = "http://" + domain + (port?":"+port:"");
+
 var params = getQueryParams(document.location.search);
 
-
-function askForRoomName() {
-	alert("no room")
-	room = "default";
-}
+// REDIRECT TO FRONTPAGE IF NO ROOM IS SPECIFIED
+room = params['room'];
+if(!room)
+    askForRoomName();
 
 function sendMessage(message) {
 	socket.emit('chat', { sender: username, message: message, room: room });
@@ -86,6 +93,11 @@ function Canvas() {
 	}
 }
 
+function clearToolList() {
+    $("#toolSettings").empty();
+    $("#toolMenuSelector").empty();
+}
+
 function buildToolMenuFor(t) {
 	$("<img>")
 		.attr('src', t.icon)
@@ -98,7 +110,6 @@ function buildToolMenuFor(t) {
 			selectTool($(this).attr('name'));
 			$(".tool-button").removeClass('selected-tool-button');
 			$(this).addClass('selected-tool-button');
-
 	});	
 }
 
@@ -108,34 +119,98 @@ function selectTool(toolName) {
 	$(tools[selectedTool].buildMenu()).appendTo("#toolSettings");
 }
 
+function addToChat(data) {
+	var prevText = $("#chatOutput").text();
+	$("#chatOutput").text(prevText + "\n" + data.sender + ": " + data.message);
+	var textarea = document.getElementById('chatOutput');
+	textarea.scrollTop = textarea.scrollHeight;
+}
+
+String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
+
 $(function() {
-	var port = window.location.port;
-	var domain = window.location.hostname;
+    
+    $(".fpInput").keydown(function(e) {
+        if(e.key == "Enter") {
+            $(this).nextAll(".fpButton").click();
+        }
+    });
+    
+    $("#mainContent").hide("fast");
+    $("#NameDialog").dialog({
+        modal: true,
+        resizable: false,
+        closeOnEscape: false
+    });
+    
+    $("#PasswordDialog").dialog({
+        modal: true,
+        resizable: false,
+        closeOnEscape: false
+    });
+    
+    $("#PasswordDialog").dialog("close");
+    
+    $(".ui-button-icon-only").hide();
+    
+    $("#ButtonJoinRoom").click(function(e) {
+        var temp = $("#InputUsername").val();
+        
+        if(temp.trim() != "") {
+            username = temp;
+            initSocket();
+            $("#NameDialog").dialog("close");
+        }
+    });
+	//username = prompt("was ist dein name?");
+});
 
-	url = "http://" + domain + (port?":"+port:"");
-	console.log("START");
-	console.log(url);
-	console.dir(drawitconfig);
-	console.log("END");
-	room = params['room'];
-	if(!room)
-		askForRoomName();
-	username = prompt("was ist dein name?");
-
+function initSocket() {
 	socket = io.connect(url);
+	
 	socket.on('chat', function(data) {
-		var prevText = $("#chatOutput").text();
-		$("#chatOutput").text(prevText + "\n" + data.sender + ": " + data.message);
-		var textarea = document.getElementById('chatOutput');
-		textarea.scrollTop = textarea.scrollHeight;
+		addToChat(data);
 	});
 
 	socket.on('event', function(data) {
 		canvas.receiveData(data);
 	});
 
-	socket.emit('join', { name: username, room: room });
+	socket.on('playerEvent', function(data) {
+		data.message = data.name + (data.left?' left':' joined') + " this session";
+		addToChat(data);
+		$("#partListWrapperList").empty();	
+		for(var i = 0; i < data.plist.length; i++) {
+			$("<li>").text(data.plist[i]).appendTo("#partListWrapperList");
+		}
+	});
 
+    socket.on('join', function(data) {
+        if(data.accept) {
+            $("#PasswordDialog").dialog("close");
+            initRest();
+        }
+        else {
+            $("#PasswordDialogMessage").text(data.message);
+            $("#PasswordDialog").dialog("open");
+        }
+    });
+    
+    
+    
+    $("#ButtonPassword").click(function(e) {
+        var pass = $("#InputPassword").val();
+        if(pass.trim() != "") {
+            socket.emit('join', { name: username, room: room, pw: pass });
+        }
+    });
+    
+	socket.emit('join', { name: username, room: room });
+}
+
+function initRest() {
+    $("#mainContent").show("fast");
+    
 	$("#chatInput").keyup(function(e) {
 		if(e.which == 13) {
 			sendMessage($("#chatInput").val());
@@ -143,34 +218,15 @@ $(function() {
 		}
 	});
 
-	$("#div_chat").draggable({ handle: "#chatHeader", constrainment: "#main", scroll: false });
-	$("#chatHeader").disableSelection();
-	
-	$("#toolMenu").draggable({ handle: "#toolMenuHeader", contrainment: "#main", scroll: false});
-	$("#toolMenuHeader").disableSelection();
+	$("#div_chat").draggable({ handle: "#chatHeader", constrainment: "#main", scroll: false });	
+	$("#toolMenu").draggable({ handle: "#toolMenuHeader", constrainment: "#main", scroll: false});
+	$("#div_part_list").draggable( { handle: "#partListHeader", constrainment: "#main", scroll: false});
+	$(".windowHeader").disableSelection();
 
 	canvas = new Canvas();
 	canvas.init("#canvas");
 
-	$.ajax({
-		url: url + '/toollist.json',
-		success: function(data) {
-			var toollist = eval(data);
-	     
-	    	for(var i = 0; i < toollist.length; i++) {
-	        	$.get(url + '/tools/' + toollist[i], function(d) {
-	            	buildToolMenuFor(tool);
-					tool.setCanvas(canvas);
-					selectTool(tool.name);
-	        	});
-	    	}
-		},
-		error: function(XMLHttpRequest, stat, error) {
-			alert("Status: " + stat); alert("Error: " + error);
-			console.dir(stat);
-			console.dir(error);
-		}
-	});
+	loadTools();
 
 	$("#canvas").mousedown(canvas.mousedown)
 		.mouseup(canvas.mouseup)
@@ -200,6 +256,9 @@ $(function() {
 		}).appendTo("#footerWindowMenu").addClass("footerWindowMenuButton");
 		$(p).hide("fast");
 	}).text("X");
+
+	$("#partListClose").click(); // to hide by default
+
 	$("#fgColor").change(function() {
 		canvas.fgColor = $("#fgColor").val();
 	}).val(canvas.fgColor);
@@ -208,7 +267,7 @@ $(function() {
 		canvas.bgColor = $("#bgColor").val();
 	}).val(canvas.bgColor);
 
-	$("<a>").attr('href', url).text("Dr4w.it").appendTo("#footerTitle");
+	$("<a>").attr('href', url).attr('target', '_blank').text("Dr4w.it").appendTo("#footerTitle");
 	
 	$("#clientSideFirst").attr("checked", clientSideFirst?"checked":"unchecked");
 	$("#clientSideFirst").change(function() {
@@ -216,15 +275,46 @@ $(function() {
 		$.cookie("clientSideFirst", clientSideFirst);
 		console.log(clientSideFirst);
 	});
-});
+	
+	$("#flipColorButton").click(function(e) {
+	    var bgColor = canvas.bgColor;
+	    var fgColor = canvas.fgColor;
+	    
+	    $("#fgColor").val(bgColor);
+	    $("#bgColor").val(fgColor);
+	    
+	    canvas.fgColor = bgColor;
+	    canvas.bgColor = fgColor;
+	    
+	    updateColorInputs();
+	});
+	
+	updateColorInputs();
+}
 
-
-
-
-
-
-
-
-
-
-
+function updateColorInputs() {
+    $('.color').each(function() {
+        document.getElementById($(this).attr('id')).color.fromString($(this).val());
+    }); 
+}
+function loadTools() {
+    clearToolList();
+    $.ajax({
+		url: url + '/toollist.json',
+		success: function(data) {
+			var toollist = eval(data);
+	    	for(var i = 0; i < toollist.length; i++) {
+	        	$.get(url + '/tools/' + toollist[i], function(d) {
+	            	buildToolMenuFor(tool);
+					tool.setCanvas(canvas);
+					selectTool(tool.name);
+	        	});
+	    	}
+		},
+		error: function(XMLHttpRequest, stat, error) {
+			alert("Status: " + stat); alert("Error: " + error);
+			console.dir(stat);
+			console.dir(error);
+		}
+	});
+}
