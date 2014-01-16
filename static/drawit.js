@@ -4,6 +4,20 @@ var username;
 var url;
 var canvas;
 
+var docTitle = document.title;
+var notifyCount = 0;
+var initDone = false;
+
+// Check window focus
+var window_focus;
+$(window).focus(function() {
+    window_focus = true;
+    setDocTitle(docTitle)
+    notifyCount = 0;
+}).blur(function() {
+    window_focus = false;
+});
+    
 // Stolen from stack-overflow
 function getQueryParams(qs) {
 	qs = qs.split("+").join(" ");
@@ -119,11 +133,33 @@ function selectTool(toolName) {
 	$(tools[selectedTool].buildMenu()).appendTo("#toolSettings");
 }
 
+function setDocTitle(str) {
+    $(document).attr("title", (str));
+}
+function notify() {
+    if(!window_focus) {
+        setDocTitle("(" + ++notifyCount + ")" + docTitle);
+    }
+}
+
 function addToChat(data) {
+    /*
 	var prevText = $("#chatOutput").text();
 	$("#chatOutput").text(prevText + "\n" + data.sender + ": " + data.message);
 	var textarea = document.getElementById('chatOutput');
 	textarea.scrollTop = textarea.scrollHeight;
+	*/
+	
+	var div = $("<div>").addClass("chatMessage");
+	$(div).appendTo($("#chatOutput"))
+	
+	$("<span>").addClass("chatMessageSender").text(data.sender).appendTo($(div));
+	$("<span>").addClass("chatMessageText").text(": " + data.message).appendTo($(div));
+	
+	var co = document.getElementById('chatOutput');
+	co.scrollTop = co.scrollHeight;
+	
+	notify();
 }
 
 String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
@@ -184,7 +220,7 @@ function initSocket() {
 	});
 
 	socket.on('playerEvent', function(data) {
-		data.message = data.name + (data.left?' left':' joined') + " this session";
+		data.message = data.name + (data.left?' left':' joined');
 		addToChat(data);
 		$("#partListWrapperList").empty();	
 		for(var i = 0; i < data.plist.length; i++) {
@@ -204,6 +240,15 @@ function initSocket() {
         }
     });
     
+    socket.on('disconnect', function () {
+        addToChat({ sender: "Interwebs", message: "Server disconnected, trying to reconnect!!"});
+    });
+    
+    socket.on('reconnect', function () {
+        addToChat({ sender: "Interwebs", message: "Server reconnected, trying to rejoin"});
+        socket.emit('join', { name: username, room: room });
+    });
+    
     $("#ButtonPassword").click(function(e) {
         var pass = $("#InputPassword").val();
         if(pass.trim() != "") {
@@ -212,11 +257,14 @@ function initSocket() {
         }
     });
     
-    
-	socket.emit('join', { name: username, room: room });
+    socket.emit('join', { name: username, room: room });
 }
 
 function initRest() {
+
+    if(initDone)
+        return;
+    
     $("#mainContent").show("fast");
     
 	$("#chatInput").keyup(function(e) {
@@ -259,7 +307,7 @@ function initRest() {
 	$(".windowClose").click(function() {
 		var p = $(this).parents(".window");
 		var a = $("<p>").text($(p).attr('title')).click(function(e) {
-			$(p).show("fast");
+			$(p).show("fast").mousedown();
 			$(this).remove();
 		}).appendTo("#footerWindowMenu").addClass("footerWindowMenuButton");
 		$(p).hide("fast");
@@ -298,6 +346,8 @@ function initRest() {
 	});
 	
 	updateColorInputs();
+	
+	initDone = true;
 }
 
 function updateColorInputs() {

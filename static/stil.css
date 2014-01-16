@@ -28,12 +28,11 @@ body {
 	width: 250px;
 	padding: 5px;
 	min-height: 40px;
+	overflow: auto;
 	background-color: #FFC675;
 }
 
-#chatOutput {
-	width: 100%;
-}
+
 
 #chatInput {
 	width: 100%;
@@ -119,4 +118,44 @@ a {
 ul {
     list-style-type: square;
 }
+
+.chatMessage {
+    height: none;
+    display: block;
+    background-color: #98959E;
+    border-radius: 3px;
+    border: solid 3px #98959E;
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.chatMessageSender {
+    font-weight: bold;
+}
+
+.chatMessageText {
+
+}
+
+#chatOutput {
+	max-height: 300px;
+	min-height: 300px;
+	width: 100%;
+	overflow-y: auto;
+	float: left;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

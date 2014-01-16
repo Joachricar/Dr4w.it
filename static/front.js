@@ -26,9 +26,9 @@ $(function() {
     });
     
     $("#ExistingRoomDialog").dialog({ 
-            modal: true,
-            resizable: false,
-            autoOpen: false
+        modal: true,
+        resizable: false,
+        autoOpen: false
     }).dialog("close");
     
     $("#JoinRoom").click(function(e) {
