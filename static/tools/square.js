@@ -1,10 +1,10 @@
-function CircleTool() {
+function RectTool() {
 	var self = this;
 	
 	self.width = 2;
-	self.name = "circle";
-	self.description = "Circle tool";
-	self.icon = "/images/icons/circleTool.png";
+	self.name = "recttool";
+	self.description = "Rect tool";
+	self.icon = "/images/icons/rectTool.png";
 	self.mouse = false;	
 	self.prevPos = null;
 
@@ -14,7 +14,7 @@ function CircleTool() {
 	self.buildMenu = function() {
 		var div = $("<div class='tool-settings'>");
 		
-		$("<span>").attr('id', 'circleWidthView').text( self.width )
+		$("<span>").attr('id', 'rectWidthView').text( self.width )
             .appendTo($("<p>").text("Stroke width: ").appendTo(div));
        
 		$("<div>").slider({
@@ -24,26 +24,27 @@ function CircleTool() {
             max: 40,
             slide: function( event, ui ) {
                 self.width = ui.value;
-                $("#circleWidthView").text(ui.value);
+                $("#rectWidthView").text(ui.value);
             }
-        }).attr('id', 'circleWidthSlider')
+        }).attr('id', 'rectWidthSlider')
         .addClass('toolSlider')
         .appendTo(div);
 		
 		$("<br/>").appendTo(div);
-		$("<input type='checkbox' name='circle-fill' id='circle-fill' " + (self.fill?"checked='checked'":"") + ">")
+		$("<input type='checkbox' name='rect-fill' id='rect-fill' " + (self.fill?"checked='checked'":"") + ">")
 			.change(function() {
 			self.fill = $(this).is(":checked");
-			$("#circle-sameColor").attr('disabled', !self.fill);
+		    $("#rect-sameColor").attr('disabled', !self.fill);
 		}).appendTo(div);
-		$("<label>").attr("for", 'circle-fill').text('Fill').appendTo(div);
+		$("<label>").attr("for", 'rect-fill').text('Fill').appendTo(div);
 		$("<br/>").appendTo(div);
 
-		$("<input type='checkbox' name='circle-sameColor' id='circle-sameColor' " + (self.sameColor?"checked='checked'":"") + ">")
+		$("<input type='checkbox' name='rect-sameColor' id='rect-sameColor' " + (self.sameColor?"checked='checked'":"") + ">")
 			.change(function() {
 			self.sameColor = $(this).is(":checked");
 		}).appendTo(div);
-		$("<label>").attr("for", "circle-sameColor").text("Fill foreground").appendTo(div);
+		
+		$("<label>").attr("for", "rect-sameColor").text("Fill foreground").appendTo(div);
 		return div;
 	}
 	
@@ -81,15 +82,11 @@ function CircleTool() {
 
 	self.draw = function(data) {
 		self.canvas.ctx.beginPath();
-		var cx = Math.floor((data.start.x+data.end.x)/2);
-		var cy = Math.floor((data.start.y+data.end.y)/2);
-		
 		self.canvas.ctx.fillStyle = (data.config.samecolor?data.config.fgcolor:data.config.bgcolor);
-		
-		var rad = Math.min(Math.abs(cx-data.start.x),Math.abs(cy-data.start.y));
-		self.canvas.ctx.arc(cx, cy, rad, 0, 2*Math.PI, false);
+		self.canvas.ctx.rect(data.start.x,data.start.y,data.end.x-data.start.x,data.end.y-data.start.y);
 		if(data.config.fill)
 			self.canvas.ctx.fill();
+	    
 		self.canvas.ctx.strokeStyle = data.config.fgcolor;
 		self.canvas.ctx.lineWidth = data.config.width;
 		self.canvas.ctx.stroke();
@@ -100,7 +97,7 @@ function CircleTool() {
 	}
 }
 
-var tool = new CircleTool();
+var tool = new RectTool();
 tools[tool.name] = tool;
 
-console.log("CIRCLE TOOL LOADED");
+console.log("RECT TOOL LOADED");

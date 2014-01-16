@@ -108,11 +108,15 @@ function FillTool() {
 	    var i4 = 0;
 	    var lineimg, lineimgn, lineimgs;
 	    var width = self.canvas.ctx.canvas.width;
+	    var height = self.canvas.ctx.canvas.height;
 	    while(q.length > 0) {
 	        var n = q.shift();
 	        var w = n.x;
 	        var e = n.x;
 	        var ce, cw;
+	        
+	        if(n.y < 0 || n.y > height)
+	            continue;
 	        
 	        lineimg = self.canvas.ctx.getImageData(0, n.y, width, 1).data;
 	        if(self.cmpColor(replColor, lineimg, n.x*4))
