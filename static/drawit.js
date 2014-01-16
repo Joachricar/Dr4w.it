@@ -72,10 +72,12 @@ function Canvas() {
 	}
 
 	self.mouseup = function(e) {
+	    //console.dir(self.ctx.getImageData(e.pageX, e.pageY, 1, 1));
 		tools[selectedTool].inputEvent("up", e);
 	}
 
 	self.mousemove = function(e) {
+	    
 		tools[selectedTool].inputEvent("move", e);
 	}
 

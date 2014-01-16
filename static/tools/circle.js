@@ -13,9 +13,27 @@ function CircleTool() {
 
 	self.buildMenu = function() {
 		var div = $("<div class='tool-settings'>");
-		$("<input type='text' id='circle-width' value='" + self.width + "'>").change(function() {
-			self.width = $(this).val();
-		}).appendTo(div);
+		
+		$("<span>").attr('id', 'circleWidthView').text( self.width )
+            .appendTo($("<p>").text("Stroke width: ").appendTo(div));
+       
+		$("<div>").slider({
+            range: "max",
+            value: self.width,
+            min: 2,
+            max: 40,
+            slide: function( event, ui ) {
+                self.width = ui.value;
+                $("#circleWidthView").text(ui.value);
+            }
+        }).attr('id', 'circleWidthSlider')
+        .addClass('toolSlider')
+        .appendTo(div);
+		
+		
+		
+		
+		
 		
 		$("<br/>").appendTo(div);
 		$("<input type='checkbox' name='circle-fill' id='circle-fill' " + (self.fill?"checked='checked'":"") + ">")
@@ -71,7 +89,9 @@ function CircleTool() {
 		var cy = Math.floor((data.start.y+data.end.y)/2);
 		
 		self.canvas.ctx.fillStyle = (data.config.samecolor?data.config.fgcolor:data.config.bgcolor);
-		self.canvas.ctx.arc(cx, cy, Math.abs(cx-Math.min(data.start.x, data.start.y)), 0, 2*Math.PI, false);
+		
+		var rad = Math.min(Math.abs(cx-data.start.x),Math.abs(cy-data.start.y));
+		self.canvas.ctx.arc(cx, cy, rad, 0, 2*Math.PI, false);
 		if(data.config.fill)
 			self.canvas.ctx.fill();
 		self.canvas.ctx.strokeStyle = data.config.fgcolor;

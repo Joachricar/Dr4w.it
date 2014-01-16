@@ -1,16 +1,28 @@
 function LineTool() {
 	var self = this;
 	
-	self.width = 1;
+	self.width = 2;
 	self.name = "line";
 	self.description = "Line tool";
 	self.icon = "/images/icons/lineTool.png";
 
 	self.buildMenu = function() {
 		var div = $("<div class='tool-settings'>");
-		$("<input type='text' id='circle-width' value='"+self.width+"'>").change(function() {
-			self.width = $(this).val();
-		}).appendTo(div);
+		$("<span>").attr('id', 'lineWidthView').text( self.width )
+            .appendTo($("<p>").text("Width: ").appendTo(div));
+       
+		$("<div>").slider({
+            range: "max",
+            value: self.width,
+            min: 2,
+            max: 40,
+            slide: function( event, ui ) {
+                self.width = ui.value;
+                $("#lineWidthView").text(ui.value);
+            }
+        }).attr('id', 'lineWidthSlider')
+        .addClass('toolSlider')
+        .appendTo(div);
 		return div;
 	}
 	

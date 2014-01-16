@@ -19,13 +19,16 @@ function ToolType() {
 		return div;
 	}
 
-	// name: "draw", "up", "down", "enter", "leave"
+	// name: "move", "up", "down", "enter", "leave"
 	self.inputEvent(name, e) {
-		
+		switch(name) {
+		    case "move":
+		        break;
+		}
 	}
 
 	// draw stuff
-	self.draw(data) {
+	self.draw = function(data) {
 
 	}
 
