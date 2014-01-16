@@ -51,7 +51,8 @@ function CircleTool() {
 						width: self.width,
 						bgcolor: self.canvas.bgColor,
 						fgcolor: self.canvas.fgColor,
-						samecolor: self.sameColor
+						samecolor: self.sameColor,
+						fill: self.fill
 					}
 				};
 				self.prevPos = data.end;
@@ -70,8 +71,8 @@ function CircleTool() {
 		var cy = Math.floor((data.start.y+data.end.y)/2);
 		
 		self.canvas.ctx.fillStyle = (data.config.samecolor?data.config.fgcolor:data.config.bgcolor);
-		self.canvas.ctx.arc(cx, cy, Math.abs(cx-data.start.x), 0, 2*Math.PI, false);
-		if(self.fill)
+		self.canvas.ctx.arc(cx, cy, Math.abs(cx-Math.min(data.start.x, data.start.y)), 0, 2*Math.PI, false);
+		if(data.config.fill)
 			self.canvas.ctx.fill();
 		self.canvas.ctx.strokeStyle = data.config.fgcolor;
 		self.canvas.ctx.lineWidth = data.config.width;
