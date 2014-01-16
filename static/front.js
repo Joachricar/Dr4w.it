@@ -5,6 +5,7 @@ $(function() {
 	
 	socket = io.connect(url);
 	socket.on('createResponse', function(data) {
+	    $("#WaitingDialog").dialog("close");
 	    if(data.accept) {
 	        window.location.href = url + "/?room=" + data.room;
 	    } 
@@ -13,7 +14,14 @@ $(function() {
 	    }
 	});
 	
+	$("#WaitingDialog").dialog({
+        modal: true,
+        resizable: false,
+        closeOnEscape: false
+    }).dialog("close");
+    
     $("#ButtonCreateRoom").click(function(e) {
+        $("#WaitingDialog").dialog("close");
         socket.emit('createRoom', { room: $("#InputRoomName").val(), pw: $("#InputPassword").val()});
     });
     
