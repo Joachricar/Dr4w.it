@@ -143,6 +143,12 @@ $(function() {
         closeOnEscape: false
     });
     
+    $("#WaitingDialog").dialog({
+        modal: true,
+        resizable: false,
+        closeOnEscape: false
+    }).dialog("close");
+    
     $("#PasswordDialog").dialog({
         modal: true,
         resizable: false,
@@ -157,9 +163,10 @@ $(function() {
         var temp = $("#InputUsername").val();
         
         if(temp.trim() != "") {
+            $("#NameDialog").dialog("close");
+            $("#WaitingDialog").dialog("open");
             username = temp;
             initSocket();
-            $("#NameDialog").dialog("close");
         }
     });
 	//username = prompt("was ist dein name?");
@@ -186,6 +193,7 @@ function initSocket() {
 	});
 
     socket.on('join', function(data) {
+        $("#WaitingDialog").dialog("close");
         if(data.accept) {
             $("#PasswordDialog").dialog("close");
             initRest();
@@ -196,14 +204,14 @@ function initSocket() {
         }
     });
     
-    
-    
     $("#ButtonPassword").click(function(e) {
         var pass = $("#InputPassword").val();
         if(pass.trim() != "") {
             socket.emit('join', { name: username, room: room, pw: pass });
+            $("#WaitingDialog").dialog("open");
         }
     });
+    
     
 	socket.emit('join', { name: username, room: room });
 }
