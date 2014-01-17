@@ -5,10 +5,22 @@
     font-weight: bold;
 }
 
+.roomNameDiv img {
+    position:relative;
+    top:0;
+    right:0;
+    height: 20px;
+}
+
 .participantListElem {
-    
     margin-left: 5%;
     width: 95%;
     padding: 5px;
     background-color: #98959E;
 }
+
+.participantListElem:hover, .roomNameDiv:hover {
+    border-left: solid 1px #FFC675;
+    border-right: solid 1px #FFC675;
+}
+

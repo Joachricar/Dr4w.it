@@ -9,9 +9,15 @@ $(function() {
 
 function addRoom(r, data) {
     var div = $("<div>").addClass("roomDiv").appendTo($("#roomListWrapper"));
-    $("<div>").addClass("roomNameDiv").text(data.name).appendTo(div).click(function(e) {
+    var nd = $("<div>").addClass("roomNameDiv").text(data.name).appendTo(div).click(function(e) {
         $(this).next('.participantListDiv').toggle();
     });
+    
+    if(data.password) {
+        $("<img>").attr("src", "/images/padlock.png")
+                .attr('title', 'This room is password protected')
+                .appendTo(nd).css('float', 'right');
+    }
     
     var plist = $("<div>").addClass('participantListDiv').appendTo(div).hide("fast");
     
