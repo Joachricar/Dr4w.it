@@ -109,6 +109,12 @@ function Canvas() {
 	}
 }
 
+function setForeground(color) {
+    $("#fgColor").val(color);
+    canvas.fgColor = $("#fgColor").val();
+    updateColorInputs();
+}
+
 function clearToolList() {
     $("#toolSettings").empty();
     $("#toolMenuSelector").empty();
@@ -126,6 +132,7 @@ function buildToolMenuFor(t) {
 			selectTool($(this).attr('name'));
 			$(".tool-button").removeClass('selected-tool-button');
 			$(this).addClass('selected-tool-button');
+			tools[$(this).attr('name')].inputEvent("selected", {});
 	});	
 }
 
@@ -350,6 +357,7 @@ function initRest() {
 	updateColorInputs();
 	
 	initDone = true;
+	
 }
 
 function updateColorInputs() {
@@ -368,6 +376,7 @@ function loadTools() {
 	            	buildToolMenuFor(tool);
 					tool.setCanvas(canvas);
 					selectTool(tool.name);
+					selectTool("pencil"); // bare fordi vi vil ikke begynne med bucket, lulz
 	        	});
 	    	}
 		},
