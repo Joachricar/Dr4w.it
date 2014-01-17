@@ -3,7 +3,7 @@ function Eraser() {
 	
 	self.width = 20;
 	self.name = "eraser";
-	self.description = "Just an eraser";
+	self.description = "Just a rectangular eraser";
 	self.icon = "/images/icons/eraserTool.png";
 	self.mouse = false;	
 	self.prevPos = null;
