@@ -8,6 +8,26 @@ var docTitle = document.title;
 var notifyCount = 0;
 var initDone = false;
 
+var cookieStrings = {
+    username: 'username',
+    clientSideFirst: 'clientSideFirst'
+};
+
+var urlStrings = {
+    toolList: '/toollist.json',
+    frontPage: '/front.html',
+    protocol: 'http://',
+    toolFolder: '/tools/'
+};
+
+var defaults = {
+    canvasBG: '#FFFFFF',
+    canvasFG: '#000000',
+    defaultTool: 'pencil',
+    siteURLText: 'Dr4w.it',
+    roomParam: 'room'
+};
+
 // Check window focus
 var window_focus;
 $(window).focus(function() {
@@ -17,7 +37,7 @@ $(window).focus(function() {
 }).blur(function() {
     window_focus = false;
 });
-    
+
 // Stolen from stack-overflow
 function getQueryParams(qs) {
 	qs = qs.split("+").join(" ");
@@ -31,17 +51,22 @@ function getQueryParams(qs) {
 }
 
 function askForRoomName() {
-	window.location.href = url + "/front.html";
+	window.location.href = url + urlStrings.frontPage;
 }
+
+String.prototype.trim = function(){
+    return this.replace(/^\s+|\s+$/g, '');
+};
 
 var port = window.location.port;
 var domain = window.location.hostname;
-url = "http://" + domain + (port?":"+port:"");
+url = urlStrings.protocol + domain + (port?":"+port:"");
 
 var params = getQueryParams(document.location.search);
 
 // REDIRECT TO FRONTPAGE IF NO ROOM IS SPECIFIED
-room = params['room'];
+room = params[defaults.roomParam];
+
 if(!room)
     askForRoomName();
 
@@ -51,15 +76,15 @@ function sendMessage(message) {
 
 var tools = [];
 var selectedTool;
-var clientSideFirst = $.cookie("clientSideFirst");
+var clientSideFirst = $.cookie(cookieStrings.clientSideFirst);
 
 function Canvas() {
 	var self = this;
 
 	self.ctx = null;
 	
-	self.fgColor = "#000000";
-	self.bgColor = "#FFFFFF";
+	self.fgColor = defaults.canvasFG;
+	self.bgColor = defaults.canvasBG;
 
 	self.init = function(canvas) {
 		self.ctx = $(canvas)[0].getContext('2d');
@@ -171,8 +196,6 @@ function addToChat(data) {
 	notify();
 }
 
-String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
-
 $(function() {
     
     $(".fpInput").keydown(function(e) {
@@ -187,6 +210,9 @@ $(function() {
         resizable: false,
         closeOnEscape: false
     });
+    
+    if($.cookie(cookieStrings.username))
+        $("#InputUsername").val($.cookie(cookieStrings.username));
     
     $("#WaitingDialog").dialog({
         modal: true,
@@ -211,6 +237,8 @@ $(function() {
             $("#NameDialog").dialog("close");
             $("#WaitingDialog").dialog("open");
             username = temp;
+            $.cookie(cookieStrings.username, temp);
+            
             initSocket();
         }
     });
@@ -270,8 +298,7 @@ function initSocket() {
 }
 
 function initRest() {
-
-    if(initDone)
+    if(initDone) // we don't wanna run this on reconnect
         return;
     
     $("#mainContent").show("fast");
@@ -290,15 +317,14 @@ function initRest() {
 
 	canvas = new Canvas();
 	canvas.init("#canvas");
-
-	loadTools();
-
-	$("#canvas").mousedown(canvas.mousedown)
+    $("#canvas").mousedown(canvas.mousedown)
 		.mouseup(canvas.mouseup)
 		.mousemove(canvas.mousemove)
 		.mouseleave(canvas.mouseleave)
 		.mouseenter(canvas.mouseenter);
-	
+    
+	loadTools();
+
 	$(".window").mousedown(function(e) {
 		$(".window").css('z-index', '0');
 		$(this).css('z-index', '1');
@@ -332,12 +358,15 @@ function initRest() {
 		canvas.bgColor = $("#bgColor").val();
 	}).val(canvas.bgColor);
 
-	$("<a>").attr('href', url).attr('target', '_blank').text("Dr4w.it").appendTo("#footerTitle");
+	$("<a>").attr('href', url)
+	    .attr('target', '_blank')
+	    .text(defaults.siteURLText)
+	    .appendTo("#footerTitle");
 	
 	$("#clientSideFirst").attr("checked", clientSideFirst?"checked":"unchecked");
 	$("#clientSideFirst").change(function() {
 		clientSideFirst = $(this).is(":checked");
-		$.cookie("clientSideFirst", clientSideFirst);
+		$.cookie(cookieStrings.clientSideFirst, clientSideFirst);
 		console.log(clientSideFirst);
 	});
 	
@@ -355,9 +384,7 @@ function initRest() {
 	});
 	
 	updateColorInputs();
-	
 	initDone = true;
-	
 }
 
 function updateColorInputs() {
@@ -368,20 +395,20 @@ function updateColorInputs() {
 function loadTools() {
     clearToolList();
     $.ajax({
-		url: url + '/toollist.json',
+		url: url + urlStrings.toolList,
 		success: function(data) {
 			var toollist = eval(data);
 	    	for(var i = 0; i < toollist.length; i++) {
-	        	$.get(url + '/tools/' + toollist[i], function(d) {
+	        	$.get(url + urlStrings.toolFolder + toollist[i], function(d) {
 	            	buildToolMenuFor(tool);
 					tool.setCanvas(canvas);
 					selectTool(tool.name);
-					selectTool("pencil"); // bare fordi vi vil ikke begynne med bucket, lulz
+					selectTool(defaults.defaultTool); // bare fordi vi vil ikke begynne med bucket, lulz
 	        	});
 	    	}
 		},
 		error: function(XMLHttpRequest, stat, error) {
-			alert("Status: " + stat); alert("Error: " + error);
+			alert("Error loading tools: " + error + " " + stat);
 			console.dir(stat);
 			console.dir(error);
 		}
