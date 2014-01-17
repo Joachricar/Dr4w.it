@@ -115,7 +115,7 @@ function Room(name) {
 	var self = this;
 	
 	self.name = name;
-	self.participants = new Array();
+	self.participants = {};
 	
 	self.getNames = function() {
 		var arr = new Array();

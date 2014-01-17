@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Dr4w.it - welcome</title>
+        <title>Dr4w.it - status</title>
         <meta http-equiv="content-type" content="text/html;charset=UTF-8">
         <meta name="description" content="Multiplayer drawing! Draw stuff with your friends and/or co-workers!">
         
@@ -8,33 +8,24 @@
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
         <link rel="stylesheet" href="default.css" />
         <link rel="stylesheet" href="frontCSS.css" />
+        <link rel="stylesheet" href="status.css" />
         
         <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
-        <script type="text/javascript" src="front.js"></script>
+        <script type="text/javascript" src="status.js"></script>
     </head>
-    
     <body>
         <div id="main">
-            <div id="newRoomWrapper">
-                <h1 id="welcomeHeader">Welcome to Dr4w.it</h1>
-                <h2 id="welcomeMessage">Create a new room</h2>
-                <input type="text" placeholder="Room name" id="InputRoomName" class="fpInput"></input>
-                <input type="password" placeholder="Password(optional)" id="InputPassword" class="fpInput"></input>
-                <button id="ButtonCreateRoom" class="fpButton">Create Room!</button>
+            <div id="roomListWrapper">
+                <h1 id="welcomeHeader">Dr4w.it status</h1>
+                <h2 id="welcomeMessage">List of rooms</h2>
+                <img src="/images/ajax-loader-orange.gif" id="roomListLoader" />
+            </div>
+            <div id="dbg">
+            
             </div>
         </div>
-        
-        <div id="ExistingRoomDialog" title="Room exist">
-            <p>This room already exist <span id="WithPW"></span></p>
-            <button class="fpButton" id="JoinRoom">Join this</button>
-            <button class="fpButton" id="CloseDialog">or create another</button>
-        </div>
-        
-        <div id="WaitingDialog" title="Waiting for server">
-		    <center><img src="/images/ajax-loader-white.gif"/></center>
-		</div>
     </body>
 </html>

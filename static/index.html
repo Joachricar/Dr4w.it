@@ -1,11 +1,13 @@
 <html>
 	<head>
-		<title>Drawit</title>
+		<title>Dr4w.it</title>
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8">
+        <meta name="description" content="Multiplayer drawing! Draw stuff with your friends and/or co-workers!">
+        
 		<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin"/>
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
 		<link rel="stylesheet" href="default.css" />
 		<link rel="stylesheet" href="stil.css"/>
-		
 		
 		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -15,7 +17,6 @@
 		<script type="text/javascript" src="drawitconfig.js"></script>
 		<script type="text/javascript" src="drawit.js"></script>
 	</head>
-
 	<body>
 	    <div id="mainContent">
 		    <div id="div_main">
@@ -35,9 +36,7 @@
 				    <button id="chatHeaderHide" class="windowHide windowButton"></button>
 			    </div>
 			    <div id="chatIOWrapper" class="windowWrapper">
-				    <!--<textarea cols="30" rows="15" id="chatOutput"></textarea>-->
 				    <div id="chatOutput">
-				    
 				    </div>
 				    <input type="text" cols="30" id="chatInput" placeholder="Chat"></input>
 			    </div>
@@ -72,7 +71,6 @@
 			    </div>
 			    <div id="partListWrapper" class="windowWrapper">
 				    <ul id="partListWrapperList">
-
 				    </ul>
 			    </div>
 		    </div>

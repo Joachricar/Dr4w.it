@@ -1,0 +1,14 @@
+.roomNameDiv {
+    background-color: #5B7B90;
+    padding: 5px;
+    width: 100%;
+    font-weight: bold;
+}
+
+.participantListElem {
+    
+    margin-left: 5%;
+    width: 95%;
+    padding: 5px;
+    background-color: #98959E;
+}
