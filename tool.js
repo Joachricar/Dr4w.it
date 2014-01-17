@@ -13,14 +13,14 @@ function ToolType() {
 
 	self.buildMenu = function() {
 		var div = $("<div class='tool-settings'>");
-		$("<input type='number' id='tool-width'>" + self.width + "</input>").change(function() {
+		$("<input>").attr('type','number').attr('id','tool-width').val(self.width).change(function() {
 			self.width = $(this).val();
 		}).appendTo(div);
 		return div;
 	}
 
-	// name: "move", "up", "down", "enter", "leave"
-	self.inputEvent(name, e) {
+	// name: "move", "up", "down", "enter", "leave", "selected"
+	self.inputEvent = function(name, e) {
 		switch(name) {
 		    case "move":
 		        break;
@@ -29,7 +29,7 @@ function ToolType() {
 
 	// draw stuff
 	self.draw = function(data) {
-
+		self.canvas.ctx.whateverTheCanvasCanDo();
 	}
 
 	// set which canvas to draw to
@@ -47,4 +47,4 @@ var tool = new ToolType();
 tools[tool.name] = tool;
 
 // opt msg
-console.log("PENCIL LOADED");
+console.log("TOOLTYPE LOADED");
