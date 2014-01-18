@@ -12,7 +12,7 @@ function RectTool() {
             type: types.bool,
             name: 'rect-fill',
             text: 'Fill',
-            val: true
+            val: false
         },
         'sameColor': {
             type: types.bool,

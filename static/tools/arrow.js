@@ -1,3 +1,4 @@
+
 function ArrowTool() {
 	var self = this;
 	
@@ -46,6 +47,28 @@ function ArrowTool() {
                 {name:'round', text:'Rounded'} 
             ],
             val: 'miter'
+        },
+        'linecap': {
+            type: types.option,
+            name: 'arrow-line-cap-type',
+            text: 'Cap type',
+            options: [
+                {name:'butt', text:'Butt'},
+                {name:'round', text:'Rounded'},
+                {name:'square', text:'Square'} 
+            ],
+            val: 'butt'
+        },
+        'arrowheadpos': {
+            type: types.option,
+            name: 'arrowhead-pos',
+            text: 'Head position',
+            options: [
+                {name:'front', text:'End'},
+                {name:'back', text:'Start'},
+                {name:'both', text:'Both'} 
+            ],
+            val: 'front'
         }
     };
     
@@ -69,7 +92,9 @@ function ArrowTool() {
 						headLength: self.settings.headLength.val,
 						headWidth: self.settings.headWidth.val,
 						fill: self.settings.arrowHeadFill.val,
-						join: self.settings.linejoin.val
+						join: self.settings.linejoin.val,
+						cap: self.settings.linecap.val,
+						arrowheadpos: self.settings.arrowheadpos.val
 					}
 				};
 				self.prevPos = data.end;
@@ -80,6 +105,7 @@ function ArrowTool() {
 
 	self.draw = function(data) {
 	    var ctx = self.canvas.ctx;
+	    ctx.lineCap = data.config.cap;
 	    ctx.lineJoin = data.config.join;
 		ctx.beginPath();
 		ctx.moveTo(data.start.x, data.start.y);
@@ -92,6 +118,15 @@ function ArrowTool() {
 		ctx.beginPath();
         
         var dir = self.normalize(self.getDirection(data.start, data.end));
+        if(data.config.arrowheadpos == "front" || data.config.arrowheadpos == "both") {
+            var back = self.rotateLeft(self.rotateLeft(dir));
+            self.drawArrowHead(back, data.end, data);
+        }
+        if(data.config.arrowheadpos == "back" || data.config.arrowheadpos == "both") {
+            self.drawArrowHead(dir, data.start, data);
+        }
+            
+        /*
         var back = self.rotateLeft(self.rotateLeft(dir));
         var backPoint = { x: data.end.x + (back.x*data.config.headLength), y: data.end.y + (back.y*data.config.headLength)};
         var up, arrowUpEnd, arrowDownEnd;
@@ -116,6 +151,34 @@ function ArrowTool() {
             
             ctx.closePath();
             ctx.fill();
+        }
+        */
+	};
+	
+	self.drawArrowHead = function(dir, point, data) {
+	    var backPoint = { x: point.x + (dir.x*data.config.headLength), y: point.y + (dir.y*data.config.headLength)};
+	    var up, arrowUpEnd, arrowDownEnd; 
+	    up = self.rotateRight(dir);
+	    
+        arrowUpEnd = { x: backPoint.x + (up.x*(data.config.headWidth/2.0)), y: backPoint.y + (up.y*(data.config.headWidth/2.0))};
+        self.canvas.ctx.moveTo(arrowUpEnd.x, arrowUpEnd.y);
+        self.canvas.ctx.lineTo(point.x, point.y);
+        self.canvas.ctx.stroke();
+        
+        up = self.rotateLeft(dir);
+        arrowDownEnd = { x: backPoint.x + (up.x*(data.config.headWidth/2.0)), y: backPoint.y + (up.y*(data.config.headWidth/2.0))};
+        self.canvas.ctx.lineTo(arrowDownEnd.x, arrowDownEnd.y);
+        self.canvas.ctx.stroke();
+        
+        if(data.config.fill) {
+            self.canvas.ctx.lineTo(arrowUpEnd.x, arrowUpEnd.y);
+            self.canvas.ctx.stroke();
+            
+            self.canvas.ctx.lineTo(point.x, point.y);
+            self.canvas.ctx.stroke();
+            
+            self.canvas.ctx.closePath();
+            self.canvas.ctx.fill();
         }
 	};
 

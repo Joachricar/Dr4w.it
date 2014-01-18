@@ -109,12 +109,12 @@ a {
 }
 
 .tool-button {
-    background-color: #98959E;
-    border: solid 1px #98959E;
+    background-color: #FFC675;
+    border: solid 1px #FFC675;
 }
 
 .selected-tool-button {
-	border: solid 1px #FFC675;
+	border: solid 1px #98959E;
 }
 
 ul {

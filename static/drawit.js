@@ -13,13 +13,6 @@ var cookieStrings = {
     clientSideFirst: 'clientSideFirst'
 };
 
-var urlStrings = {
-    toolList: '/toollist.json',
-    frontPage: '/front.html',
-    protocol: 'http://',
-    toolFolder: '/tools/'
-};
-
 var defaults = {
     canvasBG: '#FFFFFF',
     canvasFG: '#000000',
@@ -41,7 +34,8 @@ var inputEvents = {
     'enter': 4,
     'leave': 5,
     'selected': 6,
-    'deselected': 7  
+    'deselected': 7,
+    'load': 8
 };
 
 function createSettingsForTool(tool) {
@@ -218,7 +212,12 @@ function buildToolMenuFor(t) {
 }
 
 function selectTool(toolName) {
-	selectedTool = toolName;	
+    if(selectedTool) {
+        tools[selectedTool].inputEvent(inputEvents.deselected, {});
+        saveSettingsForTool(selectedTool);
+    }
+    
+	selectedTool = toolName;
 	$("#toolSettings").empty();
 	createSettingsForTool(tools[selectedTool]).appendTo("#toolSettings");
 	tools[selectedTool].setupDeps();
@@ -234,13 +233,6 @@ function notify() {
 }
 
 function addToChat(data) {
-    /*
-	var prevText = $("#chatOutput").text();
-	$("#chatOutput").text(prevText + "\n" + data.sender + ": " + data.message);
-	var textarea = document.getElementById('chatOutput');
-	textarea.scrollTop = textarea.scrollHeight;
-	*/
-	
 	var div = $("<div>").addClass("chatMessage");
 	$(div).appendTo($("#chatOutput"))
 	
@@ -253,7 +245,36 @@ function addToChat(data) {
 	notify();
 }
 
+function loadSettingsForTool(toolname) {
+    var tool = tools[toolname];
+    
+    if(!tool.settings)
+        return;
+    
+    for(var i in tool.settings) {
+        var val = $.cookie(toolname + tool.settings[i].name);
+        if(val != undefined) 
+            tool.settings[i].val = val;
+    }
+}
+
+function saveSettingsForTool(toolname) {
+    var tool = tools[toolname];
+    
+    if(!tool.settings)
+        return;
+    
+    for(var i in tool.settings) {
+        $.cookie(toolname + tool.settings[i].name, tool.settings[i].val);
+    }
+}
+
 $(function() {
+    $(window).unload(function(e) {
+        for(var i in tools) {
+            saveSettingsForTool(i);
+        }
+    });
     $(".fpInput").keydown(function(e) {
         if(e.key == "Enter") {
             $(this).nextAll(".fpButton").click();
@@ -304,20 +325,15 @@ $(function() {
 function initSocket() {
 	socket = io.connect(url);
 	
-	socket.on('chat', function(data) {
+	socket.on(socketEvents.chat, function(data)    { addToChat(data); });
+	socket.on(socketEvents.event, function(data)   { canvas.receiveData(data); });
+
+	socket.on(socketEvents.playerEvent, function(data) { 
+	    data.message = data.name + (data.left?' left':' joined');
 		addToChat(data);
 	});
 
-	socket.on('event', function(data) {
-		canvas.receiveData(data);
-	});
-
-	socket.on('playerEvent', function(data) {
-		data.message = data.name + (data.left?' left':' joined');
-		addToChat(data);
-	});
-
-    socket.on('join', function(data) {
+    socket.on(socketEvents.join, function(data) {
         $("#WaitingDialog").dialog("close");
         if(data.accept) {
             $("#PasswordDialog").dialog("close");
@@ -329,16 +345,16 @@ function initSocket() {
         }
     });
     
-    socket.on('disconnect', function () {
+    socket.on(socketEvents.disconnect, function () {
         addToChat({ sender: "Interwebs", message: "Server disconnected, trying to reconnect!!"});
     });
     
-    socket.on('reconnect', function () {
+    socket.on(socketEvents.reconnect, function () {
         addToChat({ sender: "Interwebs", message: "Server reconnected, trying to rejoin"});
-        socket.emit('join', { name: username, room: room });
+        socket.emit(socketEvents.join, { name: username, room: room });
     });
     
-    socket.on('playerList', function(data) {
+    socket.on(socketEvents.playerList, function(data) {
         $("#partListWrapperList").empty();	
 		for(var i = 0; i < data.plist.length; i++) {
 			$("<li>").text(data.plist[i]).appendTo("#partListWrapperList");
@@ -348,12 +364,12 @@ function initSocket() {
     $("#ButtonPassword").click(function(e) {
         var pass = $("#InputPassword").val();
         if(pass.trim() != "") {
-            socket.emit('join', { name: username, room: room, pw: pass });
+            socket.emit(socketEvents.join, { name: username, room: room, pw: pass });
             $("#WaitingDialog").dialog("open");
         }
     });
     
-    socket.emit('join', { name: username, room: room });
+    socket.emit(socketEvents.join, { name: username, room: room });
 }
 
 function initRest() {
@@ -463,6 +479,7 @@ function loadTools() {
 	        	$.get(url + urlStrings.toolFolder + toollist[i], function(d) {
 	            	buildToolMenuFor(tool);
 					tool.setCanvas(canvas);
+					loadSettingsForTool(tool.name);
 					selectTool(tool.name);
 					selectTool(defaults.defaultTool); // bare fordi vi vil ikke begynne med bucket, lulz
 	        	});
@@ -528,4 +545,3 @@ function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}
 function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16)}
 function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16)}
 function cutHex(h) {return (h.charAt(0)=="#") ? h.substring(1,7):h}
-

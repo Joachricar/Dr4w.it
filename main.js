@@ -9,13 +9,14 @@ function read(f){return fs.readFileSync(f).toString()};
 function include(f){eval.apply(global,[read(f)])}; 
 
 var SERV_TAG = 'Dr4w.it'; // for chat messages from server
-
 var toolListPath = "static/tools/";
+
 include('static/drawitconfig.js');
+include('static/shareddata.js');
 
 // -----------------------
 // GET TOOLS
-app.get('/toollist.json', function(req, res) {
+app.get(urlStrings.toolList, function(req, res) {
     res.setHeader('Content-Type', 'text/html');
     var data = fs.readdirSync(toolListPath);
     res.end(JSON.stringify(data) + "\n", null, 3);
@@ -23,7 +24,7 @@ app.get('/toollist.json', function(req, res) {
 
 // ---------------------------
 // GET STATUS OF SITE(users, rooms)
-app.get('/status.json', function(req, res) {
+app.get(urlStrings.statusData, function(req, res) {
 	res.setHeader('Content-Type', 'text/html');
 	res.end(JSON.stringify(rooms) + "\n", null, 3);
 });
@@ -37,25 +38,25 @@ server = app.listen(drawitconfig.port);
 // SOCKET.IO HANDLING
 io = require('socket.io').listen(server, {log: false});
 io.on('connection', function(socket) {
-	socket.emit('chat', { sender: 'Dr4w.it', message: 'Welcome to Dr4w.it!' });
+	socket.emit(socketEvents.chat, { sender: 'Dr4w.it', message: 'Welcome to Dr4w.it!' });
 	
 	socket.rooms = new Array();
 
-    socket.on('join', function(data) {
+    socket.on(socketEvents.join, function(data) {
         if(!rooms[data.room] || !rooms[data.room].hasPass()) {  // no such room, or room isn't protected
-            socket.emit("join", { accept: true });
+            socket.emit(socketEvents.join, { accept: true });
             joined(data);
         }
         else {                                                  // room has password
             if(!data.pw) {                                      // ... but user hasn't provided password
-                socket.emit("join", { accept: false, message: "Enter password" });
+                socket.emit(socketEvents.join, { accept: false, message: "Enter password" });
             }
             else {                                              // ... user has provided password 
                 if(!rooms[data.room].checkPassword(data.pw)) {  // ... which is wrong
-                    socket.emit("join", { accept: false, message: "Wrong password" });
+                    socket.emit(socketEvents.join, { accept: false, message: "Wrong password" });
                 }
                 else {                                          // ... which is correct
-                    socket.emit("join", { accept: true });
+                    socket.emit(socketEvents.join, { accept: true });
                     joined(data);
                 }
             }
@@ -71,31 +72,31 @@ io.on('connection', function(socket) {
 		socket.join(data.room);
 	}
 
-	socket.on('chat', function(data) {
-		io.sockets.in(data.room).emit('chat', data);
+	socket.on(socketEvents.chat, function(data) {
+		io.sockets.in(data.room).emit(socketEvents.chat, data);
 	});
 
-    socket.on('createRoom', function(data) {
+    socket.on(socketEvents.createRoom, function(data) {
 		if(!rooms[data.room]) {
-		    socket.emit("createResponse", { accept: true, room: data.room });
+		    socket.emit(socketEvents.createResponse, { accept: true, room: data.room });
 		    rooms[data.room] = new Room(data.room);
 		    
 		    if(data.pw != "")
 		        rooms[data.room].setPassword(data.pw);
 		}
 		else {
-		    socket.emit("createResponse", { accept: false, pw: rooms[data.room].hasPass() });
+		    socket.emit(socketEvents.createResponse, { accept: false, pw: rooms[data.room].hasPass() });
 		}
 	});
 	
-	socket.on('event', function(data) {
+	socket.on(socketEvents.event, function(data) {
 		if(data.b)
-			socket.broadcast.to(data.room).emit('event', data);
+			socket.broadcast.to(data.room).emit(socketEvents.event, data);
 		else
-			io.sockets.in(data.room).emit('event', data);
+			io.sockets.in(data.room).emit(socketEvents.event, data);
 	});
 	
-	socket.on('disconnect', function(data) {
+	socket.on(socketEvents.disconnect, function(data) {
 		for(var i = 0; i < socket.rooms.length; i++) {
 			rooms[socket.rooms[i]].removeParticipant(socket);
 			if(rooms[socket.rooms[i]].getNames().length == 0) {
@@ -128,8 +129,8 @@ function Room(name) {
 		self.participants[socket.id] = pname;
 		var names = self.getNames();
 		dir(names);
-		socket.broadcast.to(self.room).emit('playerEvent', { sender: SERV_TAG, name: pname });
-		io.sockets.in(self.room).emit('playerList', { plist: names });
+		socket.broadcast.to(self.room).emit(socketEvents.playerEvent, { sender: SERV_TAG, name: pname });
+		io.sockets.in(self.room).emit(socketEvents.playerList, { plist: names });
 	};
 
 	self.removeParticipant = function(socket) {
@@ -137,12 +138,12 @@ function Room(name) {
 		delete self.participants[socket.id];
 		var names = self.getNames();
 		log(names);
-		io.sockets.in(self.room).emit('playerEvent', { 
+		io.sockets.in(self.room).emit(socketEvents.playerEvent, { 
 				sender: SERV_TAG, 
 				left: true,
-				name: pname,
-				plist: names }
+				name: pname }
 		);
+		io.sockets.in(self.room).emit(socketEvents.playerList, { plist: names });
 	};
 	
     self.checkPassword = function(pass) {
