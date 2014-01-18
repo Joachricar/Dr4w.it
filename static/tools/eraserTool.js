@@ -6,6 +6,7 @@ function Eraser() {
 	self.icon = "/images/icons/eraserTool.png";
 	self.mouse = false;	
 	self.prevPos = null;
+    self.cursor = "none";
     
     self.settings = {
         'width': {
@@ -42,13 +43,23 @@ function Eraser() {
 					self.prevPos = data.end;
 					self.canvas.sendData(data);
 				}
+				var data = {
+					start: { x: e.pageX-(self.settings.width.val*0.5), y: e.pageY-(self.settings.width.val*0.5) },
+					end: { x: e.pageX + (self.settings.width.val*0.5), y: e.pageY + (self.settings.width.val*0.5) },
+					name: "recttool",
+					config: { 
+						width: 2,
+						fgcolor: "#000000",
+						fill: false,
+						samecolor: true
+					}
+				};
+				self.canvas.drawOverlay(data);
 				break;
 		}
 	}
 
 	self.draw = function(data) {
-	    // TODO clear rect hele veien
-	    // elns
 	    // Draw regular
 		self.canvas.ctx.clearRect(
 		    data.pos.x-(data.config.width/2), 

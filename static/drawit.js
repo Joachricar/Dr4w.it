@@ -8,9 +8,36 @@ var docTitle = document.title;
 var notifyCount = 0;
 var initDone = false;
 
+var types = {
+    bool: 0,
+    range: 1,
+    option: 2,
+};
+
+var settings = {
+    'useCustomCursor': {
+        type: types.option,
+        name: 'user-custom-cursor',
+        text: 'Use custom cursors',
+        options: [
+            { name: 'both', text: 'Both' },
+            { name: 'custom', text: 'Custom'},
+            { name: 'off', text: 'Off'}
+        ],
+        val: 'off'
+    },
+    'waitForServer': {
+        type: types.bool,
+        name: 'wait-for-server',
+        text: 'Wait for server',
+        val: false
+    }
+}
+
 var cookieStrings = {
     username: 'username',
-    clientSideFirst: 'clientSideFirst'
+    clientSideFirst: 'clientSideFirst',
+    settings: 'drawitGlobal'
 };
 
 var defaults = {
@@ -19,12 +46,6 @@ var defaults = {
     defaultTool: 'pencil',
     siteURLText: 'Dr4w.it',
     roomParam: 'room'
-};
-
-var types = {
-    bool: 0,
-    range: 1,
-    option: 2,
 };
 
 var inputEvents = {
@@ -48,15 +69,18 @@ function createSettingsForTool(tool) {
         return div;
     }
     
-    for(var i in tool.settings) {
-        var setting = tool.settings[i];
-        createViewForSetting(tool, setting, div);
-    }
-    
+    createViewForAllSettings(tool.settings, div)
     return div;
 }
 
-function createViewForSetting(tool, setting, div) {
+function createViewForAllSettings(settings, div) {
+    for(var i in settings) {
+        var setting = settings[i];
+        createViewForSetting(setting, div);
+    }
+}
+
+function createViewForSetting(setting, div) {
     switch(setting.type) {
         case types.bool:
             createCheckboxWithLabel(setting.val, setting.text, setting.name, div, function(val) {
@@ -171,10 +195,8 @@ function Canvas() {
 	}
 
 	self.mousemove = function(e) {
-	    if(self.mouse) {
-	        self.clearOverlay();
-		    tools[selectedTool].inputEvent(inputEvents.move, e);
-		}
+        self.clearOverlay();
+	    tools[selectedTool].inputEvent(inputEvents.move, e);
 	}
 
 	self.mouseenter = function(e) {
@@ -183,6 +205,7 @@ function Canvas() {
 
 	self.mouseleave = function(e) {
 	    self.mouse = false;
+	    self.clearOverlay();
 		tools[selectedTool].inputEvent(inputEvents.leave, e);
 	}
 
@@ -193,7 +216,7 @@ function Canvas() {
 			data: data
 		};
 
-		if(clientSideFirst) {
+		if(!settings.waitForServer) {
 			self.receiveData(fullData);
 			fullData.b = 1;
 		}
@@ -204,6 +227,7 @@ function Canvas() {
     self.drawOverlay = function(data) {
         //self.overlay.save();
         self.ovclear = false;
+        self.lastOverlay = data;
         tools[data.name].drawOverlay(data, self.overlay);
     }
     
@@ -211,9 +235,19 @@ function Canvas() {
 		tools[webdata.data.name].draw(webdata.data, self.ctx);
 	}
 	
+	self.setLastOverlayData = function() {
+	    self.overlayData.l = self.lastOverlay.start.x * 1.1;
+        self.overlayData.t = self.lastOverlay.start.y * 1.1;
+        self.overlayData.r = (self.lastOverlay.end.x-self.overlayData.l) * 1.1;
+        self.overlayData.b = (self.lastOverlay.end.y-self.overlayData.t) * 1.1;
+	}
+	
 	self.clearOverlay = function() {
 	    if(!self.ovclear) {
 	        self.ovclear = true;
+	        
+	        //self.setLastOverlayData();
+	        //self.overlay.clearRect(self.overlayData.l,self.overlayData.t, self.overlayData.r, self.overlayData.b);
 	        self.overlay.clearRect(0,0, self.overlay.canvas.width, self.overlay.canvas.height);
 	        //self.overlay.restore();
 	    }
@@ -257,6 +291,12 @@ function selectTool(toolName) {
 	$("#toolSettings").empty();
 	createSettingsForTool(tools[selectedTool]).appendTo("#toolSettings");
 	tools[selectedTool].setupDeps();
+	
+	if(settings.useCustomCursor.val == "custom")
+	    $("canvas").css('cursor', tools[selectedTool].cursor?tools[selectedTool].cursor:"default");
+	else {
+	    $("canvas").css('cursor', "default");
+	}
 }
 
 function setDocTitle(str) {
@@ -281,33 +321,36 @@ function addToChat(data) {
 	notify();
 }
 
-function loadSettingsForTool(toolname) {
-    var tool = tools[toolname];
-    if(!tool.settings)
+function loadSettingsForTool(toolname, settings) {
+    if(!settings)
         return;
-    for(var i in tool.settings) {
-        var val = $.cookie(toolname + tool.settings[i].name);
+    for(var i in settings) {
+        var val = $.cookie(toolname + settings[i].name);
         if(val != undefined) {
-            if(tool.settings[i].type == types.bool)
-                tool.settings[i].val = val==1;
+            if(settings[i].type == types.bool)
+                settings[i].val = val==1;
             else
-                tool.settings[i].val = val;
+                settings[i].val = val;
         }
     }
 }
 
-function saveSettingsForTool(toolname) {
-    var tool = tools[toolname];
-    
-    if(!tool.settings)
+function saveSettingsForTool(toolname, settings) {
+    if(!settings)
         return;
     
-    for(var i in tool.settings) {
-        var val = tool.settings[i].val;
-        if(tool.settings[i].type == types.bool)
-            val = tool.settings[i].val?1:0;
-        $.cookie(toolname + tool.settings[i].name, val);
+    for(var i in settings) {
+        var val = settings[i].val;
+        if(settings[i].type == types.bool)
+            val = settings[i].val?1:0;
+        $.cookie(toolname + settings[i].name, val);
     }
+}
+
+function buildSettingsPage() {
+    var div = $("<div class='tool-settings'>").empty();
+    createViewForAllSettings(settings, div);
+    $(div).appendTo("#settingsWrapper");
 }
 
 $(function() {
@@ -319,9 +362,12 @@ $(function() {
 		.mouseleave(canvas.mouseleave)
 		.mouseenter(canvas.mouseenter);
     
+    loadSettingsForTool(cookieStrings.settings, settings);
+    
     $(window).unload(function(e) {
+        saveSettingsForTool(cookieStrings.settings, settings);
         for(var i in tools) {
-            saveSettingsForTool(i);
+            saveSettingsForTool(i, tools[i].settings);
         }
     });
     $(".fpInput").keydown(function(e) {
@@ -439,8 +485,10 @@ function initRest() {
 		
 	$("#toolMenu").draggable({ handle: "#toolMenuHeader", constrainment: "#main", scroll: false});
 	$("#div_part_list").draggable( { handle: "#partListHeader", constrainment: "#main", scroll: false});
+	$("#div_settings").draggable({ handle: "#settingsHeader", constrainment: "#main", scroll: false });
 	$(".windowHeader").disableSelection();
     
+    buildSettingsPage();
 	loadTools();
 
 	$(".window").mousedown(function(e) {
@@ -467,7 +515,7 @@ function initRest() {
 	}).text("X");
 
 	$("#partListClose").click(); // to hide by default
-
+    $("#settingsHeaderClose").click();
 	$("#fgColor").change(function() {
 		canvas.fgColor = $("#fgColor").val();
 	}).val(canvas.fgColor);
@@ -480,13 +528,6 @@ function initRest() {
 	    .attr('target', '_blank')
 	    .text(defaults.siteURLText)
 	    .appendTo("#footerTitle");
-	
-	$("#clientSideFirst").attr("checked", clientSideFirst?"checked":"unchecked");
-	$("#clientSideFirst").change(function() {
-		clientSideFirst = $(this).is(":checked");
-		$.cookie(cookieStrings.clientSideFirst, clientSideFirst);
-		console.log(clientSideFirst);
-	});
 	
 	$("#flipColorButton").click(function(e) {
 	    var bgColor = canvas.bgColor;
@@ -520,7 +561,7 @@ function loadTools() {
 	        	$.get(url + urlStrings.toolFolder + toollist[i], function(d) {
 	            	buildToolMenuFor(tool);
 					tool.setCanvas(canvas);
-					loadSettingsForTool(tool.name);
+					loadSettingsForTool(tool.name, tools[tool.name].settings);
 					selectTool(tool.name);
 					selectTool(defaults.defaultTool); // bare fordi vi vil ikke begynne med bucket, lulz
 	        	});

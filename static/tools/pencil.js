@@ -5,9 +5,8 @@ function Pencil() {
 	self.name = "pencil";
 	self.description = "Just a pencil";
 	self.icon = "/images/icons/pencil.png";
-	self.mouse = false;	
 	self.prevPos = null;
-    self.smooth = true;
+    self.cursor = "none";
     
     self.settings = {
         'width': {
@@ -27,15 +26,13 @@ function Pencil() {
 	self.inputEvent = function(name, e) {
 		switch(name) {
 			case inputEvents.down:
-				self.mouse = true;
 				self.prevPos = { x: e.pageX, y: e.pageY };
 				break;
 			case inputEvents.up:
 			case inputEvents.leave:
-				self.mouse = false;
 				break;
 			case inputEvents.move:
-				if(self.mouse) {
+				if(self.canvas.mouse) {
 					var data = {
 						start: self.prevPos,
 						end: { x: e.pageX, y: e.pageY },
@@ -48,10 +45,24 @@ function Pencil() {
 					self.prevPos = data.end;
 					self.canvas.sendData(data);
 				}
+				else {
+				    var data = {
+						start: { x: e.pageX-(self.settings.width.val*0.5), y: e.pageY-(self.settings.width.val*0.5) },
+						end: { x: e.pageX + (self.settings.width.val*0.5), y: e.pageY + (self.settings.width.val*0.5) },
+						name: "circle",
+						config: { 
+							width: 2,
+							fgcolor: "#000000",
+							fill: false,
+							samecolor: true
+						}
+					};
+					self.canvas.drawOverlay(data);
+				}
 				break;
 		}
 	}
-
+    
 	self.draw = function(data, ctx) {
 	    // Draw regular
 		ctx.beginPath();

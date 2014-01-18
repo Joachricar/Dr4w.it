@@ -45,6 +45,17 @@
 				    <input type="text" cols="30" id="chatInput" placeholder="Chat"></input>
 			    </div>
 		    </div>
+		    
+		    <div id="div_settings" class="window ui-widget-content" title="Settings">
+			    <div id="settingsHeader" class="ui-widget-header windowHeader">
+				    <p class="windowHeaderText"></p>
+				    <button id="settingsHeaderClose" class="windowClose windowButton"></button>
+				    <button id="settingsHeaderHide" class="windowHide windowButton"></button>
+			    </div>
+			    <div id="settingsWrapper" class="windowWrapper">
+			    </div>
+		    </div>
+		    
 		    <div id="toolMenu" class="window ui-widget-content" title="Tools">
 			    <div id="toolMenuHeader" class="ui-widget-header windowHeader">
 				    <p class="windowHeaderText"></p>
@@ -54,8 +65,10 @@
 			    </div>
 			    <div id="toolMenuWrapper" class="windowWrapper">
 				    <div id="toolMenuColorSelector">
+				        <!--
 					    <input type="checkbox" id="clientSideFirst" name="clientSideFirst" title="Don't wait for server to draw"/>
 					    <label for="clientSideFirst">Draw locally first</label>
+					    -->
 					    <input class="color {hash:true}" id="fgColor"/>
 					    <button id="flipColorButton" title="Switch colors"></button>
 					    <input class="color {hash:true}" id="bgColor"/>

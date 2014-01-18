@@ -54,7 +54,7 @@ function CircleTool() {
 	}
     
     self.generateData = function(e) {
-        return data = {
+        return {
 			start: self.startPos,
 			end: { x: e.pageX, y: e.pageY },
 			name: self.name,
