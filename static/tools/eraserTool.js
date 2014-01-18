@@ -23,14 +23,14 @@ function Eraser() {
 	
 	self.inputEvent = function(name, e) {
 		switch(name) {
-			case "down":
+			case inputEvents.down:
 				self.mouse = true;
 				break;
-			case "up":
-			case "leave":
+			case inputEvents.up:
+			case inputEvents.leave:
 				self.mouse = false;
 				break;
-			case "move":
+			case inputEvents.move:
 				if(self.mouse) {
 					var data = {
 						pos: { x: e.pageX, y: e.pageY },

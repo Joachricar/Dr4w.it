@@ -53,10 +53,10 @@ function ArrowTool() {
 	
 	self.inputEvent = function(name, e) {
 		switch(name) {
-			case "down":
+			case inputEvents.down:
 				self.startPos = { x: e.pageX, y: e.pageY };
 				break;
-			case "up":
+			case inputEvents.up:
 				self.endPos = { x: e.pageX, y:e.pageY };
 
 				var data = {
@@ -66,7 +66,7 @@ function ArrowTool() {
 					config: { 
 						width: self.settings.width.val,
 						color: self.canvas.fgColor,
-						headLength: self.headLength.val,
+						headLength: self.settings.headLength.val,
 						headWidth: self.settings.headWidth.val,
 						fill: self.settings.arrowHeadFill.val,
 						join: self.settings.linejoin.val
@@ -93,17 +93,17 @@ function ArrowTool() {
         
         var dir = self.normalize(self.getDirection(data.start, data.end));
         var back = self.rotateLeft(self.rotateLeft(dir));
-        var backPoint = { x: data.end.x + (back.x*self.headLength), y: data.end.y + (back.y*self.headLength)};
+        var backPoint = { x: data.end.x + (back.x*data.config.headLength), y: data.end.y + (back.y*data.config.headLength)};
         var up, arrowUpEnd, arrowDownEnd;
         
         up = self.rotateRight(back);
-        arrowUpEnd = { x: backPoint.x + (up.x*(self.headWidth/2.0)), y: backPoint.y + (up.y*(self.headWidth/2.0))};
+        arrowUpEnd = { x: backPoint.x + (up.x*(data.config.headWidth/2.0)), y: backPoint.y + (up.y*(data.config.headWidth/2.0))};
         ctx.moveTo(arrowUpEnd.x, arrowUpEnd.y);
         ctx.lineTo(data.end.x, data.end.y);
         ctx.stroke();
         
         up = self.rotateLeft(back);
-        arrowDownEnd = { x: backPoint.x + (up.x*(self.headWidth/2.0)), y: backPoint.y + (up.y*(self.headWidth/2.0))};
+        arrowDownEnd = { x: backPoint.x + (up.x*(data.config.headWidth/2.0)), y: backPoint.y + (up.y*(data.config.headWidth/2.0))};
         ctx.lineTo(arrowDownEnd.x, arrowDownEnd.y);
         ctx.stroke();
         
@@ -145,5 +145,3 @@ function ArrowTool() {
 
 var tool = new ArrowTool();
 tools[tool.name] = tool;
-
-console.log("ARROWTOOL LOADED");

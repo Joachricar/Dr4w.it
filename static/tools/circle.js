@@ -38,11 +38,11 @@ function CircleTool() {
 	
 	self.inputEvent = function(name, e) {
 		switch(name) {
-			case "down":
+			case inputEvents.down:
 				self.mouse = true;
 				self.startPos = { x: e.pageX, y: e.pageY };
 				break;
-			case "up":
+			case inputEvents.up:
 				self.mouse = false;
 				self.endPos = { x: e.pageX, y:e.pageY };
 
@@ -61,7 +61,7 @@ function CircleTool() {
 				self.prevPos = data.end;
 				self.canvas.sendData(data);
 				break;
-			case "move":
+			case inputEvents.move:
 				if(self.mouse) {
 				}
 				break;

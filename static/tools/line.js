@@ -33,10 +33,10 @@ function LineTool() {
 	
 	self.inputEvent = function(name, e) {
 		switch(name) {
-			case "down":
+			case inputEvents.down:
 				self.startPos = { x: e.pageX, y: e.pageY };
 				break;
-			case "up":
+			case inputEvents.up:
 				self.endPos = { x: e.pageX, y:e.pageY };
 
 				var data = {

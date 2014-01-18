@@ -26,7 +26,7 @@ function FillTool() {
 	// name: "move", "up", "down", "enter", "leave"
 	self.inputEvent = function(name, e) {
 		switch(name) {
-		    case "down":
+		    case inputEvents.down:
 		        var data = {
 		            pos: { x: e.pageX, y: e.pageY },
 		            color: self.canvas.fgColor,

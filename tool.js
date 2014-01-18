@@ -2,9 +2,6 @@
 function ToolType() {
 	var self = this;
 	
-	// tool attributes
-	// 	optional
-	self.width = 2;
 	//  required(used by drawit)
 	self.name = "a unique name";
 	self.description = "Crazy tool shit";
@@ -14,10 +11,10 @@ function ToolType() {
 	self.settings = {
         'aRangeSetting': {
             type: types.range,
-            text: 'Line Width',
-            name: 'tool-width',
-            val: 2,
-            min: 2,
+            text: 'Line Width', // ui text
+            name: 'tool-width', // ui-id
+            val: 2,             // selected value
+            min: 2, 
             max: 40
         },
         'aBooleanSetting': {
@@ -46,7 +43,7 @@ function ToolType() {
 	// name: "move", "up", "down", "enter", "leave", "selected"
 	self.inputEvent = function(name, e) {
 		switch(name) {
-		    case "move":
+		    case inputEvents.move:
 		        break;
 		}
 	}

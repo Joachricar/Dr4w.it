@@ -34,6 +34,16 @@ var types = {
     option: 2,
 };
 
+var inputEvents = {
+    'up': 0,
+    'down': 1,
+    'move': 2,
+    'enter': 4,
+    'leave': 5,
+    'selected': 6,
+    'deselected': 7  
+};
+
 function createSettingsForTool(tool) {
     var div = $("<div class='tool-settings'>").empty();
     if(tool.message) {
@@ -139,25 +149,25 @@ function Canvas() {
 	}
 
 	self.mousedown = function(e) {
-		tools[selectedTool].inputEvent("down", e);
+		tools[selectedTool].inputEvent(inputEvents.down, e);
 	}
 
 	self.mouseup = function(e) {
 	    //console.dir(self.ctx.getImageData(e.pageX, e.pageY, 1, 1));
-		tools[selectedTool].inputEvent("up", e);
+		tools[selectedTool].inputEvent(inputEvents.up, e);
 	}
 
 	self.mousemove = function(e) {
 	    
-		tools[selectedTool].inputEvent("move", e);
+		tools[selectedTool].inputEvent(inputEvents.move, e);
 	}
 
 	self.mouseenter = function(e) {
-		tools[selectedTool].inputEvent("enter", e);
+		tools[selectedTool].inputEvent(inputEvents.enter, e);
 	}
 
 	self.mouseleave = function(e) {
-		tools[selectedTool].inputEvent("leave", e);
+		tools[selectedTool].inputEvent(inputEvents.leave, e);
 	}
 
 	self.sendData = function(data) {
@@ -203,7 +213,7 @@ function buildToolMenuFor(t) {
 			selectTool($(this).attr('name'));
 			$(".tool-button").removeClass('selected-tool-button');
 			$(this).addClass('selected-tool-button');
-			tools[$(this).attr('name')].inputEvent("selected", {});
+			tools[$(this).attr('name')].inputEvent(inputEvents.selected, {});
 	});	
 }
 

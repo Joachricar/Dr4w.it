@@ -15,7 +15,7 @@ function SaveTool() {
 	self.inputEvent = function(name, e) {
 	    
 		switch(name) {
-		    case "selected":
+		    case inputEvents.selected:
 		        // here is the most important part because if you dont replace you will get a DOM 18 exception.
 		        var image = self.canvas.ctx.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 		        alert(image);

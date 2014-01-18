@@ -26,15 +26,15 @@ function Pencil() {
 	
 	self.inputEvent = function(name, e) {
 		switch(name) {
-			case "down":
+			case inputEvents.down:
 				self.mouse = true;
 				self.prevPos = { x: e.pageX, y: e.pageY };
 				break;
-			case "up":
-			case "leave":
+			case inputEvents.up:
+			case inputEvents.leave:
 				self.mouse = false;
 				break;
-			case "move":
+			case inputEvents.move:
 				if(self.mouse) {
 					var data = {
 						start: self.prevPos,
