@@ -1,34 +1,24 @@
 function Eraser() {
 	var self = this;
 	
-	self.width = 20;
 	self.name = "eraser";
 	self.description = "Just a rectangular eraser";
 	self.icon = "/images/icons/eraserTool.png";
 	self.mouse = false;	
 	self.prevPos = null;
-    self.smooth = true;
     
-	self.buildMenu = function() {
-		var div = $("<div class='tool-settings'>");
-		
-		$("<span>").attr('id', 'eraserWidthView').text( self.width )
-            .appendTo($("<p>").text("Width: ").appendTo(div));
-       
-		$("<div>").slider({
-            range: "max",
-            value: self.width,
+    self.settings = {
+        'width': {
+            type: types.range,
+            name: 'eraser-width',
+            text: 'Size',
+            val: 10,
             min: 2,
-            max: 60,
-            slide: function( event, ui ) {
-                self.width = ui.value;
-                $("#eraserWidthView").text(ui.value);
-            }
-        }).attr('id', 'eraserWidthSlider')
-        .addClass('toolSlider')
-        .appendTo(div);
-		
-		return div;
+            max: 60
+        }
+    };
+	self.setupDeps = function() {
+
 	}
 	
 	self.inputEvent = function(name, e) {
@@ -46,7 +36,7 @@ function Eraser() {
 						pos: { x: e.pageX, y: e.pageY },
 						name: self.name,
 						config: { 
-							width: self.width,
+							width: self.settings.width.val,
 						}
 					};
 					self.prevPos = data.end;

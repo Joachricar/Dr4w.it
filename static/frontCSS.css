@@ -4,14 +4,19 @@ body {
 }
 
 #main {
-   text-align: left; /* reset text-align for IE */
-   margin: 0 auto; /* Center in other browsers */
-   width: 400px;
+    text-align: left; /* reset text-align for IE */
+    margin: 0 auto; /* Center in other browsers */
+    width: 400px;
+    
+}
+
+.fpWrapper {
    border: solid 3px #98959E;
    background-color: #FFC675;
    border-radius: 5px;
    padding: 40px;
    margin-top: 80px;
+   width: 100%;
 }
 
 #welcomeHeader {
@@ -22,4 +27,15 @@ body {
     color: #98959E;
 }
 
+#footer {
+    width: 100%;
+    text-align: center; /* reset text-align for IE */
+    margin: 0 auto; /* Center in other browsers */
+}
 
+#footer a {
+    margin-left: 5px;
+    margin-right: 5px;
+    text-decoration: none;
+    color: #98959E;
+}

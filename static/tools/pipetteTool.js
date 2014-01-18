@@ -9,9 +9,7 @@ function PipetteTool() {
 	self.prevPos = null;
     self.smooth = true;
     
-	self.buildMenu = function() {
-		var div = $("<div class='tool-settings'>");
-		return div;
+	self.setupDeps = function() {
 	};
 	
 	self.inputEvent = function(name, e) {

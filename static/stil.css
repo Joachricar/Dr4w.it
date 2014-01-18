@@ -149,10 +149,19 @@ ul {
 
 .toolSlider {
     width: 80%;
+    margin: 0;
     margin-left: 10%;
 }
 
+.sliderLabel {
+    margin-top: 5;
+    margin-bottom: 5;
+}
 
+.tool-select {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
 
 
 

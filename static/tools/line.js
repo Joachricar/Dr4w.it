@@ -1,29 +1,34 @@
 function LineTool() {
 	var self = this;
 	
-	self.width = 2;
 	self.name = "line";
 	self.description = "Line tool";
 	self.icon = "/images/icons/lineTool.png";
 
-	self.buildMenu = function() {
-		var div = $("<div class='tool-settings'>");
-		$("<span>").attr('id', 'lineWidthView').text( self.width )
-            .appendTo($("<p>").text("Width: ").appendTo(div));
-       
-		$("<div>").slider({
-            range: "max",
-            value: self.width,
+    self.settings = {
+        'width': {
+            type: types.range,
+            name: 'line-width',
+            text: 'Line width',
+            val: 2,
             min: 2,
-            max: 40,
-            slide: function( event, ui ) {
-                self.width = ui.value;
-                $("#lineWidthView").text(ui.value);
-            }
-        }).attr('id', 'lineWidthSlider')
-        .addClass('toolSlider')
-        .appendTo(div);
-		return div;
+            max: 40
+        },
+        'linecap': {
+            type: types.option,
+            name: 'line-cap-type',
+            text: 'Cap type',
+            options: [
+                {name:'butt', text:'Butt'},
+                {name:'round', text:'Rounded'},
+                {name:'square', text:'Square'} 
+            ],
+            val: 'round'
+        }
+    };
+
+	self.setupDeps = function() {
+        
 	}
 	
 	self.inputEvent = function(name, e) {
@@ -39,8 +44,9 @@ function LineTool() {
 					end: self.endPos,
 					name: self.name,
 					config: { 
-						width: self.width,
-						color: self.canvas.fgColor
+						width: self.settings.width.val,
+						color: self.canvas.fgColor,
+						cap: self.settings.linecap.val
 					}
 				};
 				self.prevPos = data.end;
@@ -50,6 +56,7 @@ function LineTool() {
 	}
 
 	self.draw = function(data) {
+	    self.canvas.ctx.lineCap = data.config.cap;
 		self.canvas.ctx.beginPath();
 		self.canvas.ctx.moveTo(data.start.x, data.start.y);
 		self.canvas.ctx.lineTo(data.end.x, data.end.y);

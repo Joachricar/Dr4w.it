@@ -28,6 +28,52 @@ var defaults = {
     roomParam: 'room'
 };
 
+var types = {
+    bool: 0,
+    range: 1,
+    option: 2,
+};
+
+function createSettingsForTool(tool) {
+    var div = $("<div class='tool-settings'>").empty();
+    if(tool.message) {
+        $("<p>").text(tool.message).css('color','red').appendTo(div);
+    }
+    
+    if(!tool.settings) {
+        return div;
+    }
+    
+    for(var i in tool.settings) {
+        var setting = tool.settings[i];
+        createViewForSetting(tool, setting, div);
+    }
+    
+    return div;
+}
+
+function createViewForSetting(tool, setting, div) {
+    switch(setting.type) {
+        case types.bool:
+            createCheckboxWithLabel(setting.val, setting.text, setting.name, div, function(val) {
+	            setting.val = val;
+	        });
+	        $("<br>").appendTo(div);
+            break;
+        case types.range:
+            createSlider(setting.val, setting.min, setting.max, setting.text, setting.name, div, function(val) {
+	            setting.val = val;
+	        });
+	        break;
+	    case types.option:
+	        createSelectWithLabel(setting.val, setting.options, setting.text, setting.name, div, function(val) {
+	            setting.val = val;
+	        });
+	        $("<br>").appendTo(div);
+	        break;
+    }
+}
+
 // Check window focus
 var window_focus;
 $(window).focus(function() {
@@ -164,7 +210,8 @@ function buildToolMenuFor(t) {
 function selectTool(toolName) {
 	selectedTool = toolName;	
 	$("#toolSettings").empty();
-	$(tools[selectedTool].buildMenu()).appendTo("#toolSettings");
+	createSettingsForTool(tools[selectedTool]).appendTo("#toolSettings");
+	tools[selectedTool].setupDeps();
 }
 
 function setDocTitle(str) {
@@ -197,7 +244,6 @@ function addToChat(data) {
 }
 
 $(function() {
-    
     $(".fpInput").keydown(function(e) {
         if(e.key == "Enter") {
             $(this).nextAll(".fpButton").click();
@@ -310,7 +356,9 @@ function initRest() {
 		}
 	});
 
-	$("#div_chat").draggable({ handle: "#chatHeader", constrainment: "#main", scroll: false });	
+	$("#div_chat").draggable({ handle: "#chatHeader", constrainment: "#main", scroll: false })
+	.css({ 'top': 5, 'right': 5}); // start chat in upper right corner
+		
 	$("#toolMenu").draggable({ handle: "#toolMenuHeader", constrainment: "#main", scroll: false});
 	$("#div_part_list").draggable( { handle: "#partListHeader", constrainment: "#main", scroll: false});
 	$(".windowHeader").disableSelection();
@@ -414,3 +462,57 @@ function loadTools() {
 		}
 	});
 }
+
+// Init value
+function createSlider(initVal, minVal, maxVal, text, name, div, func) {
+    $("<span>").attr('id', name + 'View').text( initVal )
+        .appendTo($("<p>").text(text + ": ").appendTo(div).addClass('sliderLabel'));
+   
+	return $("<div>").slider({
+        range: "max",
+        value: initVal,
+        min: minVal,
+        max: maxVal,
+        slide: function( event, ui ) {
+            
+            $("#"+name+"View").text(ui.value);
+            
+            func(ui.value);
+        }
+    }).attr('id', name + 'Slider')
+    .addClass('toolSlider').appendTo(div);
+}
+
+function createCheckboxWithLabel(initVal, text, name, div, func) {
+    var inp = $("<input>").attr({
+        'type': 'checkbox',
+        'name': name,
+        'id': name,
+        'checked': initVal})
+		.change(function() {
+		    func($(this).is(":checked"));
+	}).appendTo(div);
+	$("<label>").attr("for", name).text(text).appendTo(div);
+	return inp;
+}
+
+function createSelectWithLabel(val, options, text, name, div, func) {
+    var s = $("<select>").attr('name',name).attr('id', name).appendTo(div).change(function() {
+        func($(this).val());
+    }).addClass("tool-select");
+    
+    $('<label>').attr('for', name).text(text).appendTo(div);
+    for(var i in options) {
+        var opt = $("<option>").attr('value', options[i].name).text(options[i].text).appendTo(s)
+        if(val == options[i].name) {
+            $(opt).attr('selected','selected');
+        }
+    }
+    return s;
+}
+
+function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}
+function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16)}
+function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16)}
+function cutHex(h) {return (h.charAt(0)=="#") ? h.substring(1,7):h}
+

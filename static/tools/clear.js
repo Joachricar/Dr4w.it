@@ -6,7 +6,7 @@ function ClearTool() {
 	self.icon = "/images/icons/clearTool.png";
 	self.prevPos = null;
 
-	self.buildMenu = function() {
+	self.setupDeps = function() {
 	}
 	
 	self.inputEvent = function(name, e) {

@@ -1,8 +1,12 @@
 .roomNameDiv {
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
     background-color: #5B7B90;
     padding: 5px;
     width: 100%;
     font-weight: bold;
+    margin-top: 5px;
 }
 
 .roomNameDiv img {
@@ -13,6 +17,9 @@
 }
 
 .participantListElem {
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
     margin-left: 5%;
     width: 95%;
     padding: 5px;
@@ -20,7 +27,11 @@
 }
 
 .participantListElem:hover, .roomNameDiv:hover {
-    border-left: solid 1px #FFC675;
-    border-right: solid 1px #FFC675;
+    text-decoration: underline;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }
 

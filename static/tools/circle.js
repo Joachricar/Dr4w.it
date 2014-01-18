@@ -1,51 +1,40 @@
 function CircleTool() {
 	var self = this;
 	
-	self.width = 2;
 	self.name = "circle";
 	self.description = "Circle tool";
 	self.icon = "/images/icons/circleTool.png";
 	self.mouse = false;	
 	self.prevPos = null;
-
-	self.sameColor = true;
-	self.fill = true;
-
-	self.buildMenu = function() {
-		var div = $("<div class='tool-settings'>");
-		
-		$("<span>").attr('id', 'circleWidthView').text( self.width )
-            .appendTo($("<p>").text("Stroke width: ").appendTo(div));
-       
-		$("<div>").slider({
-            range: "max",
-            value: self.width,
+    self.settings = {
+        'fill': {
+            type: types.bool,
+            name: 'circle-fill',
+            text: 'Fill',
+            val: true
+        },
+        'sameColor': {
+            type: types.bool,
+            name: 'circle-same-color',
+            text: 'Fill foreground',
+            val: false
+        },
+        'width': {
+            type: types.range,
+            name: 'circleStrokeWidth',
+            text: 'Stroke width',
+            val: 2,
             min: 2,
-            max: 40,
-            slide: function( event, ui ) {
-                self.width = ui.value;
-                $("#circleWidthView").text(ui.value);
-            }
-        }).attr('id', 'circleWidthSlider')
-        .addClass('toolSlider')
-        .appendTo(div);
-		
-		$("<br/>").appendTo(div);
-		$("<input type='checkbox' name='circle-fill' id='circle-fill' " + (self.fill?"checked='checked'":"") + ">")
-			.change(function() {
-			self.fill = $(this).is(":checked");
-			$("#circle-sameColor").attr('disabled', !self.fill);
-		}).appendTo(div);
-		$("<label>").attr("for", 'circle-fill').text('Fill').appendTo(div);
-		$("<br/>").appendTo(div);
-
-		$("<input type='checkbox' name='circle-sameColor' id='circle-sameColor' " + (self.sameColor?"checked='checked'":"") + ">")
-			.change(function() {
-			self.sameColor = $(this).is(":checked");
-		}).appendTo(div);
-		$("<label>").attr("for", "circle-sameColor").text("Fill foreground").appendTo(div);
-		return div;
-	}
+            max: 40
+        }
+    };
+    
+    self.setupDeps = function() {
+		$("#circle-fill").change(function() {
+		    $("#circle-same-color").attr('disabled', !$(this).is(":checked"));
+        });
+        $("#circle-same-color").attr('disabled', !$("#circle-fill").is(":checked"));
+	};
 	
 	self.inputEvent = function(name, e) {
 		switch(name) {
@@ -62,11 +51,11 @@ function CircleTool() {
 					end: self.endPos,
 					name: self.name,
 					config: { 
-						width: self.width,
+						width: self.settings.width.val,
 						bgcolor: self.canvas.bgColor,
 						fgcolor: self.canvas.fgColor,
-						samecolor: self.sameColor,
-						fill: self.fill
+						samecolor: self.settings.sameColor.val,
+						fill: self.settings.fill.val
 					}
 				};
 				self.prevPos = data.end;

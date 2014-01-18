@@ -1,52 +1,41 @@
 function RectTool() {
 	var self = this;
 	
-	self.width = 2;
 	self.name = "recttool";
 	self.description = "Rect tool";
 	self.icon = "/images/icons/rectTool.png";
 	self.mouse = false;	
 	self.prevPos = null;
 
-	self.sameColor = true;
-	self.fill = true;
-
-	self.buildMenu = function() {
-		var div = $("<div class='tool-settings'>");
-		
-		$("<span>").attr('id', 'rectWidthView').text( self.width )
-            .appendTo($("<p>").text("Stroke width: ").appendTo(div));
-       
-		$("<div>").slider({
-            range: "max",
-            value: self.width,
+    self.settings = {
+        'fill': {
+            type: types.bool,
+            name: 'rect-fill',
+            text: 'Fill',
+            val: true
+        },
+        'sameColor': {
+            type: types.bool,
+            name: 'rect-same-color',
+            text: 'Fill foreground',
+            val: false
+        },
+        'width': {
+            type: types.range,
+            name: 'rectStrokeWidth',
+            text: 'Stroke width',
+            val: 2,
             min: 2,
-            max: 40,
-            slide: function( event, ui ) {
-                self.width = ui.value;
-                $("#rectWidthView").text(ui.value);
-            }
-        }).attr('id', 'rectWidthSlider')
-        .addClass('toolSlider')
-        .appendTo(div);
-		
-		$("<br/>").appendTo(div);
-		$("<input type='checkbox' name='rect-fill' id='rect-fill' " + (self.fill?"checked='checked'":"") + ">")
-			.change(function() {
-			self.fill = $(this).is(":checked");
-		    $("#rect-sameColor").attr('disabled', !self.fill);
-		}).appendTo(div);
-		$("<label>").attr("for", 'rect-fill').text('Fill').appendTo(div);
-		$("<br/>").appendTo(div);
+            max: 40
+        }
+    };
 
-		$("<input type='checkbox' name='rect-sameColor' id='rect-sameColor' " + (self.sameColor?"checked='checked'":"") + ">")
-			.change(function() {
-			self.sameColor = $(this).is(":checked");
-		}).appendTo(div);
-		
-		$("<label>").attr("for", "rect-sameColor").text("Fill foreground").appendTo(div);
-		return div;
-	}
+	self.setupDeps = function() {
+		$("#rect-fill").change(function() {
+		    $("#rect-same-color").attr('disabled', !$(this).is(":checked"));
+        });
+        $("#rect-same-color").attr('disabled', !$("#rect-fill").is(":checked"));
+	};
 	
 	self.inputEvent = function(name, e) {
 		switch(name) {
@@ -63,11 +52,11 @@ function RectTool() {
 					end: self.endPos,
 					name: self.name,
 					config: { 
-						width: self.width,
+						width: self.settings.width.val,
 						bgcolor: self.canvas.bgColor,
 						fgcolor: self.canvas.fgColor,
-						samecolor: self.sameColor,
-						fill: self.fill
+						samecolor: self.settings.sameColor.val,
+						fill: self.settings.fill.val
 					}
 				};
 				self.prevPos = data.end;

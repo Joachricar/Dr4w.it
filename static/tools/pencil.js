@@ -9,31 +9,19 @@ function Pencil() {
 	self.prevPos = null;
     self.smooth = true;
     
-	self.buildMenu = function() {
-		var div = $("<div class='tool-settings'>");
-		/*
-		$("<input type='number' id='pencil-width' value='" + self.width + "'>").change(function() {
-			self.width = $(this).val();
-		}).appendTo(div);
-		*/
-		
-		$("<span>").attr('id', 'pencilWidthView').text( self.width )
-            .appendTo($("<p>").text("Width: ").appendTo(div));
-       
-		$("<div>").slider({
-            range: "max",
-            value: self.width,
+    self.settings = {
+        'width': {
+            type: types.range,
+            text: 'Line Width',
+            name: 'pencil-width',
+            val: 2,
             min: 2,
-            max: 40,
-            slide: function( event, ui ) {
-                self.width = ui.value;
-                $("#pencilWidthView").text(ui.value);
-            }
-        }).attr('id', 'pencilWidthSlider')
-        .addClass('toolSlider')
-        .appendTo(div);
-		
-		return div;
+            max: 40
+        }
+    }
+    
+	self.setupDeps = function() {
+	    // UI dependencies
 	}
 	
 	self.inputEvent = function(name, e) {
@@ -53,7 +41,7 @@ function Pencil() {
 						end: { x: e.pageX, y: e.pageY },
 						name: self.name,
 						config: { 
-							width: self.width,
+							width: self.settings.width.val,
 							color: self.canvas.fgColor
 						}
 					};
@@ -67,6 +55,7 @@ function Pencil() {
 	self.draw = function(data) {
 	    // Draw regular
 		self.canvas.ctx.beginPath();
+		self.canvas.ctx.lineCap="round";
 		self.canvas.ctx.moveTo(data.start.x, data.start.y);
 		self.canvas.ctx.lineTo(data.end.x, data.end.y);
 		self.canvas.ctx.lineWidth = data.config.width;
@@ -74,6 +63,7 @@ function Pencil() {
 		self.canvas.ctx.stroke();
 		
 		// draw circle in end of line
+		/*
 		if(self.smooth && +data.config.width > 1) {
 		    self.canvas.ctx.beginPath();
 		    var cx = Math.floor(data.end.x);
@@ -87,6 +77,7 @@ function Pencil() {
 		    //self.canvas.ctx.lineWidth = data.config.width;
 		    //self.canvas.ctx.stroke();
 		}
+		*/
 	}
 
 	self.setCanvas = function(c) {

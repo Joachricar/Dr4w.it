@@ -1,75 +1,26 @@
 // Tool template
 
-function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}
-function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16)}
-function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16)}
-function cutHex(h) {return (h.charAt(0)=="#") ? h.substring(1,7):h}
-
-function Queue(){
-    this.top = null;
-    this.first = null;
-    
-    this.count = 0;
-
-    this.GetCount = function(){
-        return this.count;
-    }
-
-    this.Push = function(data){
-        var node = {
-            data : data,
-            next : null
-        }
-
-        node.next = this.top;
-        this.top = node;
-
-        this.count++;
-        
-        if(!this.first)
-            this.first = node;
-    }
-
-    this.Shift = function() {
-        var f = this.first;
-        this.first = this.first.next;
-        this.count--;
-        return f;
-    }
-}
-
 function FillTool() {
 	var self = this;
 	
-	// tool attributes
-	// 	optional
-	self.width = 2;
-	//  required(used by drawit)
 	self.name = "filltool";
 	self.description = "Fill stuff";
 	self.icon = "/images/icons/bucketTool.png";
-    self.treshold = 10;
-	self.buildMenu = function() {
-		var div = $("<div class='tool-settings'>");
-		$("<p>").css('color', 'red').text('Might be incredibly slow. Works best in chrome').appendTo(div);
-		
-		$("<span>").attr('id', 'bucketTresholdView').text( self.treshold )
-            .appendTo($("<p>").text("Treshold: ").appendTo(div));
-       
-		$("<div>").slider({
-            range: "max",
-            value: self.treshold,
-            min: 0,
-            max: 255,
-            slide: function( event, ui ) {
-                self.treshold = ui.value;
-                $("#bucketTresholdView").text(ui.value);
-            }
-        }).attr('id', 'bucketTresholdSlider')
-        .addClass('toolSlider')
-        .appendTo(div);
-        
-		return div;
+    self.message = 'Might be incredibly slow. Works best in chrome';
+    
+    self.settings = {
+        'treshold': {
+            type: types.range,
+            name: 'fill-treshold',
+            text: 'Treshold',
+            val: 10,
+            min: 1,
+            max: 255
+        }
+    };
+    
+	self.setupDeps = function() {
+
 	};
 
 	// name: "move", "up", "down", "enter", "leave"
@@ -80,7 +31,7 @@ function FillTool() {
 		            pos: { x: e.pageX, y: e.pageY },
 		            color: self.canvas.fgColor,
 		            name: self.name,
-		            treshold: self.treshold
+		            treshold: self.settings.treshold.val
 		        };
 		        self.canvas.sendData(data);
 		        break;
@@ -163,18 +114,7 @@ function FillTool() {
 	            } else {
 	                now = false;
 	            }
-	        }
-	        
-	        /*
-	        self.canvas.ctx.beginPath();
-	        self.canvas.ctx.moveTo(w, n.y);
-	        self.canvas.ctx.lineTo(e, n.y);
-	        self.canvas.ctx.lineWidth = 1;
-	        self.canvas.ctx.strokeStyle = rgbReplColor;
-	        self.canvas.ctx.stroke();
-	        */
-	        
-	        
+	        } 
 	    };
 	};
 	
@@ -193,24 +133,6 @@ function FillTool() {
 	           Math.abs(c1[2] - c2[o+2]) < self.otherTreshold && 
 	           Math.abs(c1[3] - c2[o+3]) < self.otherTreshold;
 	};
-
-/**
-Flood-fill (node, target-color, replacement-color):
- 1. Set Q to the empty queue.
- 2. If the color of node is not equal to target-color, return.
- 3. Add node to Q.
- 4. For each element N of Q:
- 5.     If the color of N is equal to target-color:
- 6.         Set w and e equal to N.
- 7.         Move w to the west until the color of the node to the west of w no longer matches target-color.
- 8.         Move e to the east until the color of the node to the east of e no longer matches target-color.
- 9.         For each node n between w and e:
-10.             Set the color of n to replacement-color.
-11.             If the color of the node to the north of n is target-color, add that node to Q.
-12.             If the color of the node to the south of n is target-color, add that node to Q.
-13. Continue looping until Q is exhausted.
-14. Return.
-*/
 
 	// set which canvas to draw to
 	self.setCanvas = function(c) {
