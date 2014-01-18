@@ -36,7 +36,6 @@ var settings = {
 
 var cookieStrings = {
     username: 'username',
-    clientSideFirst: 'clientSideFirst',
     settings: 'drawitGlobal'
 };
 
@@ -150,7 +149,6 @@ function sendMessage(message) {
 
 var tools = [];
 var selectedTool;
-var clientSideFirst = $.cookie(cookieStrings.clientSideFirst);
 
 function Canvas() {
 	var self = this;
@@ -216,7 +214,7 @@ function Canvas() {
 			data: data
 		};
 
-		if(!settings.waitForServer) {
+		if(!settings.waitForServer.val) {
 			self.receiveData(fullData);
 			fullData.b = 1;
 		}
@@ -245,7 +243,6 @@ function Canvas() {
 	self.clearOverlay = function() {
 	    if(!self.ovclear) {
 	        self.ovclear = true;
-	        
 	        //self.setLastOverlayData();
 	        //self.overlay.clearRect(self.overlayData.l,self.overlayData.t, self.overlayData.r, self.overlayData.b);
 	        self.overlay.clearRect(0,0, self.overlay.canvas.width, self.overlay.canvas.height);
