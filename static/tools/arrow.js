@@ -1,14 +1,10 @@
 function ArrowTool() {
 	var self = this;
 	
-	self.width = 2;
 	self.name = "arrowtool";
 	self.description = "Arrow tool";
 	self.icon = "/images/icons/arrowTool.png";
-    self.headLength = 20;
-    self.headWidth = 20;
-    self.arrowHeadFill = false;
-    
+
     self.settings = {
         'arrowHeadFill': {
             type: types.bool,
@@ -53,9 +49,7 @@ function ArrowTool() {
         }
     };
     
-	self.setupDeps = function() {
-
-	}
+	self.setupDeps = function() { }
 	
 	self.inputEvent = function(name, e) {
 		switch(name) {

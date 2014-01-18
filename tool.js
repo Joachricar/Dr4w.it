@@ -9,14 +9,38 @@ function ToolType() {
 	self.name = "a unique name";
 	self.description = "Crazy tool shit";
 	self.icon = "/images/icons/someIconForThisTool.png";
+	self.message = "OPTIONAL MESSAGE ON TOP OF SETTINGS MENU";
 	
-
-	self.buildMenu = function() {
-		var div = $("<div class='tool-settings'>");
-		$("<input>").attr('type','number').attr('id','tool-width').val(self.width).change(function() {
-			self.width = $(this).val();
-		}).appendTo(div);
-		return div;
+	self.settings = {
+        'aRangeSetting': {
+            type: types.range,
+            text: 'Line Width',
+            name: 'tool-width',
+            val: 2,
+            min: 2,
+            max: 40
+        },
+        'aBooleanSetting': {
+            type: types.bool,
+            name: 'arrow-head-fill',
+            text: 'Fill head',
+            val: false
+        },
+        'anOptionSetting': {
+            type: types.option,
+            name: 'arrow-linejoin-type',
+            text: 'Edge type',
+            options: [
+                {name:'bevel', text:'Bevel'},
+                {name:'miter', text:'Point'},
+                {name:'round', text:'Rounded'} 
+            ],
+            val: 'miter'
+        }
+    }
+    
+	self.setupDeps = function() {
+	    // UI dependencies
 	}
 
 	// name: "move", "up", "down", "enter", "leave", "selected"
@@ -48,3 +72,6 @@ tools[tool.name] = tool;
 
 // opt msg
 console.log("TOOLTYPE LOADED");
+
+	
+
