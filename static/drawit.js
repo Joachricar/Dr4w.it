@@ -31,6 +31,12 @@ var settings = {
         name: 'wait-for-server',
         text: 'Wait for server',
         val: false
+    },
+    'useOverlay': {
+        type: types.bool,
+        name: 'use-overlay',
+        text: 'Use overlay',
+        val: false
     }
 }
 
@@ -224,9 +230,11 @@ function Canvas() {
 
     self.drawOverlay = function(data) {
         //self.overlay.save();
-        self.ovclear = false;
-        self.lastOverlay = data;
-        tools[data.name].drawOverlay(data, self.overlay);
+        if(settings.useOverlay.val) {
+            self.ovclear = false;
+            self.lastOverlay = data;
+            tools[data.name].drawOverlay(data, self.overlay);
+        }
     }
     
 	self.receiveData = function(webdata) {
