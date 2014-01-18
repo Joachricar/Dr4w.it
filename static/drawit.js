@@ -131,29 +131,50 @@ var clientSideFirst = $.cookie(cookieStrings.clientSideFirst);
 function Canvas() {
 	var self = this;
 
+    // mouse btn up(false)/down(true)
+    self.mouse = false; 
+    
 	self.ctx = null;
+	self.overlay = null;
 	
 	self.fgColor = defaults.canvasFG;
 	self.bgColor = defaults.canvasBG;
-
-	self.init = function(canvas) {
+	
+	// bounds to clear
+    self.overlayData = {
+        l: 0,
+        t: 0,
+        r: 0,
+        b: 0
+    };
+    
+	self.init = function(canvas, overlay) {
 		self.ctx = $(canvas)[0].getContext('2d');
 		self.ctx.canvas.width = window.innerWidth;
 		self.ctx.canvas.height = window.innerHeight;
+		
+		self.overlay = $(overlay)[0].getContext('2d');
+		self.overlay.canvas.width = window.innerWidth;
+		self.overlay.canvas.height = window.innerHeight;
 	}
-
+	
 	self.mousedown = function(e) {
+	    self.mouse = true;
+	    self.clearOverlay();
 		tools[selectedTool].inputEvent(inputEvents.down, e);
 	}
 
 	self.mouseup = function(e) {
-	    //console.dir(self.ctx.getImageData(e.pageX, e.pageY, 1, 1));
+	    self.mouse = false;
+	    self.clearOverlay();
 		tools[selectedTool].inputEvent(inputEvents.up, e);
 	}
 
 	self.mousemove = function(e) {
-	    
-		tools[selectedTool].inputEvent(inputEvents.move, e);
+	    if(self.mouse) {
+	        self.clearOverlay();
+		    tools[selectedTool].inputEvent(inputEvents.move, e);
+		}
 	}
 
 	self.mouseenter = function(e) {
@@ -161,6 +182,7 @@ function Canvas() {
 	}
 
 	self.mouseleave = function(e) {
+	    self.mouse = false;
 		tools[selectedTool].inputEvent(inputEvents.leave, e);
 	}
 
@@ -179,8 +201,22 @@ function Canvas() {
 		socket.emit('event', fullData);
 	}
 
-	self.receiveData = function(data) {
-		tools[data.data.name].draw(data.data);
+    self.drawOverlay = function(data) {
+        //self.overlay.save();
+        self.ovclear = false;
+        tools[data.name].drawOverlay(data, self.overlay);
+    }
+    
+	self.receiveData = function(webdata) {
+		tools[webdata.data.name].draw(webdata.data, self.ctx);
+	}
+	
+	self.clearOverlay = function() {
+	    if(!self.ovclear) {
+	        self.ovclear = true;
+	        self.overlay.clearRect(0,0, self.overlay.canvas.width, self.overlay.canvas.height);
+	        //self.overlay.restore();
+	    }
 	}
 }
 
@@ -247,14 +283,16 @@ function addToChat(data) {
 
 function loadSettingsForTool(toolname) {
     var tool = tools[toolname];
-    
     if(!tool.settings)
         return;
-    
     for(var i in tool.settings) {
         var val = $.cookie(toolname + tool.settings[i].name);
-        if(val != undefined) 
-            tool.settings[i].val = val;
+        if(val != undefined) {
+            if(tool.settings[i].type == types.bool)
+                tool.settings[i].val = val==1;
+            else
+                tool.settings[i].val = val;
+        }
     }
 }
 
@@ -265,11 +303,22 @@ function saveSettingsForTool(toolname) {
         return;
     
     for(var i in tool.settings) {
-        $.cookie(toolname + tool.settings[i].name, tool.settings[i].val);
+        var val = tool.settings[i].val;
+        if(tool.settings[i].type == types.bool)
+            val = tool.settings[i].val?1:0;
+        $.cookie(toolname + tool.settings[i].name, val);
     }
 }
 
 $(function() {
+    canvas = new Canvas();
+	canvas.init("#canvas", "#overlayCanvas");
+    $("canvas").mousedown(canvas.mousedown)
+		.mouseup(canvas.mouseup)
+		.mousemove(canvas.mousemove)
+		.mouseleave(canvas.mouseleave)
+		.mouseenter(canvas.mouseenter);
+    
     $(window).unload(function(e) {
         for(var i in tools) {
             saveSettingsForTool(i);
@@ -391,14 +440,6 @@ function initRest() {
 	$("#toolMenu").draggable({ handle: "#toolMenuHeader", constrainment: "#main", scroll: false});
 	$("#div_part_list").draggable( { handle: "#partListHeader", constrainment: "#main", scroll: false});
 	$(".windowHeader").disableSelection();
-
-	canvas = new Canvas();
-	canvas.init("#canvas");
-    $("#canvas").mousedown(canvas.mousedown)
-		.mouseup(canvas.mouseup)
-		.mousemove(canvas.mousemove)
-		.mouseleave(canvas.mouseleave)
-		.mouseenter(canvas.mouseenter);
     
 	loadTools();
 

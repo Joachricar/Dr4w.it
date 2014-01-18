@@ -4,8 +4,6 @@ function RectTool() {
 	self.name = "recttool";
 	self.description = "Rect tool";
 	self.icon = "/images/icons/rectTool.png";
-	self.mouse = false;	
-	self.prevPos = null;
 
     self.settings = {
         'fill': {
@@ -40,50 +38,53 @@ function RectTool() {
 	self.inputEvent = function(name, e) {
 		switch(name) {
 			case inputEvents.down:
-				self.mouse = true;
 				self.startPos = { x: e.pageX, y: e.pageY };
 				break;
 			case inputEvents.up:
-				self.mouse = false;
-				self.endPos = { x: e.pageX, y:e.pageY };
-
-				var data = {
-					start: self.startPos,
-					end: self.endPos,
-					name: self.name,
-					config: { 
-						width: self.settings.width.val,
-						bgcolor: self.canvas.bgColor,
-						fgcolor: self.canvas.fgColor,
-						samecolor: self.settings.sameColor.val,
-						fill: self.settings.fill.val
-					}
-				};
-				self.prevPos = data.end;
-				self.canvas.sendData(data);
+				self.canvas.sendData(self.generateData(e));
 				break;
 			case inputEvents.move:
-				if(self.mouse) {
+				if(self.canvas.mouse) {
+				    self.canvas.drawOverlay(self.generateData(e));
 				}
 				break;
 		}
-	}
+	};
 
-	self.draw = function(data) {
-		self.canvas.ctx.beginPath();
-		self.canvas.ctx.fillStyle = (data.config.samecolor?data.config.fgcolor:data.config.bgcolor);
-		self.canvas.ctx.rect(data.start.x,data.start.y,data.end.x-data.start.x,data.end.y-data.start.y);
+    self.generateData = function(e) {
+        return {
+			start: self.startPos,
+			end: { x: e.pageX, y: e.pageY },
+			name: self.name,
+			config: { 
+				width: self.settings.width.val,
+				bgcolor: self.canvas.bgColor,
+				fgcolor: self.canvas.fgColor,
+				samecolor: self.settings.sameColor.val,
+				fill: self.settings.fill.val
+			}
+		};
+    };
+    
+    self.drawOverlay = function(data, ctx) {
+        self.draw(data, ctx);
+    };
+    
+	self.draw = function(data, ctx) {
+		ctx.beginPath();
+		ctx.fillStyle = (data.config.samecolor?data.config.fgcolor:data.config.bgcolor);
+		ctx.rect(data.start.x,data.start.y,data.end.x-data.start.x,data.end.y-data.start.y);
 		if(data.config.fill)
-			self.canvas.ctx.fill();
+			ctx.fill();
 	    
-		self.canvas.ctx.strokeStyle = data.config.fgcolor;
-		self.canvas.ctx.lineWidth = data.config.width;
-		self.canvas.ctx.stroke();
-	}
+		ctx.strokeStyle = data.config.fgcolor;
+		ctx.lineWidth = data.config.width;
+		ctx.stroke();
+	};
 
 	self.setCanvas = function(c) {
 		self.canvas = c;
-	}
+	};
 }
 
 var tool = new RectTool();

@@ -11,7 +11,7 @@ function ClearTool() {
 	
 	self.inputEvent = function(name, e) {
 		switch(name) {
-			case "down":
+			case inputEvents.down:
 				var data = {
 					name: self.name
 				};

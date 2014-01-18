@@ -5,7 +5,7 @@ function ArrowTool() {
 	self.name = "arrowtool";
 	self.description = "Arrow tool";
 	self.icon = "/images/icons/arrowTool.png";
-
+    
     self.settings = {
         'arrowHeadFill': {
             type: types.bool,
@@ -72,7 +72,7 @@ function ArrowTool() {
         }
     };
     
-	self.setupDeps = function() { }
+	self.setupDeps = function() { };
 	
 	self.inputEvent = function(name, e) {
 		switch(name) {
@@ -81,30 +81,39 @@ function ArrowTool() {
 				break;
 			case inputEvents.up:
 				self.endPos = { x: e.pageX, y:e.pageY };
-
-				var data = {
-					start: self.startPos,
-					end: self.endPos,
-					name: self.name,
-					config: { 
-						width: self.settings.width.val,
-						color: self.canvas.fgColor,
-						headLength: self.settings.headLength.val,
-						headWidth: self.settings.headWidth.val,
-						fill: self.settings.arrowHeadFill.val,
-						join: self.settings.linejoin.val,
-						cap: self.settings.linecap.val,
-						arrowheadpos: self.settings.arrowheadpos.val
-					}
-				};
-				self.prevPos = data.end;
-				self.canvas.sendData(data);
+				self.canvas.sendData(self.generateData(e));
 				break;
+		    case inputEvents.move:
+		        if(self.canvas.mouse)
+		            self.canvas.drawOverlay(self.generateData(e));
+		        break;
 		}
-	}
+	};
 
-	self.draw = function(data) {
-	    var ctx = self.canvas.ctx;
+    self.generateData = function(e) {
+        return {
+			start: self.startPos,
+			end: { x: e.pageX, y: e.pageY },
+			name: self.name,
+			config: { 
+				width: self.settings.width.val,
+				color: self.canvas.fgColor,
+				headLength: self.settings.headLength.val,
+				headWidth: self.settings.headWidth.val,
+				fill: self.settings.arrowHeadFill.val,
+				join: self.settings.linejoin.val,
+				cap: self.settings.linecap.val,
+				arrowheadpos: self.settings.arrowheadpos.val
+			}
+		};
+    };
+    
+    self.drawOverlay = function(data, ctx) {
+        self.draw(data, ctx);
+    };
+    
+	self.draw = function(data, ctx) {
+	
 	    ctx.lineCap = data.config.cap;
 	    ctx.lineJoin = data.config.join;
 		ctx.beginPath();
@@ -120,65 +129,37 @@ function ArrowTool() {
         var dir = self.normalize(self.getDirection(data.start, data.end));
         if(data.config.arrowheadpos == "front" || data.config.arrowheadpos == "both") {
             var back = self.rotateLeft(self.rotateLeft(dir));
-            self.drawArrowHead(back, data.end, data);
+            self.drawArrowHead(ctx, back, data.end, data.config.headLength, data.config.headWidth, data.config.fill);
         }
         if(data.config.arrowheadpos == "back" || data.config.arrowheadpos == "both") {
-            self.drawArrowHead(dir, data.start, data);
+            self.drawArrowHead(ctx, dir, data.start, data.config.headLength, data.config.headWidth, data.config.fill);
         }
-            
-        /*
-        var back = self.rotateLeft(self.rotateLeft(dir));
-        var backPoint = { x: data.end.x + (back.x*data.config.headLength), y: data.end.y + (back.y*data.config.headLength)};
-        var up, arrowUpEnd, arrowDownEnd;
-        
-        up = self.rotateRight(back);
-        arrowUpEnd = { x: backPoint.x + (up.x*(data.config.headWidth/2.0)), y: backPoint.y + (up.y*(data.config.headWidth/2.0))};
+	};
+	
+	self.drawArrowHead = function(ctx, dir, point, hlen, hwid, fill) {
+	    var backPoint = { x: point.x + (dir.x*hlen), y: point.y + (dir.y*hwid)};
+	    var up, arrowUpEnd, arrowDownEnd; 
+	    up = self.rotateRight(dir);
+	    
+        arrowUpEnd = { x: backPoint.x + (up.x*(hwid/2.0)), y: backPoint.y + (up.y*(hwid/2.0))};
         ctx.moveTo(arrowUpEnd.x, arrowUpEnd.y);
-        ctx.lineTo(data.end.x, data.end.y);
+        ctx.lineTo(point.x, point.y);
         ctx.stroke();
         
-        up = self.rotateLeft(back);
-        arrowDownEnd = { x: backPoint.x + (up.x*(data.config.headWidth/2.0)), y: backPoint.y + (up.y*(data.config.headWidth/2.0))};
+        up = self.rotateLeft(dir);
+        arrowDownEnd = { x: backPoint.x + (up.x*(hwid/2.0)), y: backPoint.y + (up.y*(hwid/2.0))};
         ctx.lineTo(arrowDownEnd.x, arrowDownEnd.y);
         ctx.stroke();
         
-        if(data.config.fill) {
+        if(fill) {
             ctx.lineTo(arrowUpEnd.x, arrowUpEnd.y);
             ctx.stroke();
             
-            ctx.lineTo(data.end.x, data.end.y);
+            ctx.lineTo(point.x, point.y);
             ctx.stroke();
             
             ctx.closePath();
             ctx.fill();
-        }
-        */
-	};
-	
-	self.drawArrowHead = function(dir, point, data) {
-	    var backPoint = { x: point.x + (dir.x*data.config.headLength), y: point.y + (dir.y*data.config.headLength)};
-	    var up, arrowUpEnd, arrowDownEnd; 
-	    up = self.rotateRight(dir);
-	    
-        arrowUpEnd = { x: backPoint.x + (up.x*(data.config.headWidth/2.0)), y: backPoint.y + (up.y*(data.config.headWidth/2.0))};
-        self.canvas.ctx.moveTo(arrowUpEnd.x, arrowUpEnd.y);
-        self.canvas.ctx.lineTo(point.x, point.y);
-        self.canvas.ctx.stroke();
-        
-        up = self.rotateLeft(dir);
-        arrowDownEnd = { x: backPoint.x + (up.x*(data.config.headWidth/2.0)), y: backPoint.y + (up.y*(data.config.headWidth/2.0))};
-        self.canvas.ctx.lineTo(arrowDownEnd.x, arrowDownEnd.y);
-        self.canvas.ctx.stroke();
-        
-        if(data.config.fill) {
-            self.canvas.ctx.lineTo(arrowUpEnd.x, arrowUpEnd.y);
-            self.canvas.ctx.stroke();
-            
-            self.canvas.ctx.lineTo(point.x, point.y);
-            self.canvas.ctx.stroke();
-            
-            self.canvas.ctx.closePath();
-            self.canvas.ctx.fill();
         }
 	};
 

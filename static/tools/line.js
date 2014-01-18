@@ -4,7 +4,7 @@ function LineTool() {
 	self.name = "line";
 	self.description = "Line tool";
 	self.icon = "/images/icons/lineTool.png";
-
+    
     self.settings = {
         'width': {
             type: types.range,
@@ -26,10 +26,8 @@ function LineTool() {
             val: 'round'
         }
     };
-
-	self.setupDeps = function() {
-        
-	}
+    
+	self.setupDeps = function() { };
 	
 	self.inputEvent = function(name, e) {
 		switch(name) {
@@ -37,41 +35,50 @@ function LineTool() {
 				self.startPos = { x: e.pageX, y: e.pageY };
 				break;
 			case inputEvents.up:
-				self.endPos = { x: e.pageX, y:e.pageY };
-
-				var data = {
-					start: self.startPos,
-					end: self.endPos,
-					name: self.name,
-					config: { 
-						width: self.settings.width.val,
-						color: self.canvas.fgColor,
-						cap: self.settings.linecap.val
-					}
-				};
-				self.prevPos = data.end;
+			    var data = self.generateData(e);
+				self.endPos = data.end;
 				self.canvas.sendData(data);
 				break;
+		    case inputEvents.move:
+		        if(self.canvas.mouse) 
+		            self.canvas.drawOverlay(self.generateData(e));
+		        break;
 		}
-	}
+	};
 
-	self.draw = function(data) {
-	    self.canvas.ctx.lineCap = data.config.cap;
-		self.canvas.ctx.beginPath();
-		self.canvas.ctx.moveTo(data.start.x, data.start.y);
-		self.canvas.ctx.lineTo(data.end.x, data.end.y);
-		self.canvas.ctx.lineWidth = data.config.width;
-		self.canvas.ctx.strokeStyle = data.config.color;
-		self.canvas.ctx.stroke();
-		
-	}
+    self.generateData = function(e) {
+        return {
+            start: self.startPos,
+            end: { x: e.pageX, y:e.pageY },
+            name: self.name,
+		    config: { 
+			    width: self.settings.width.val,
+			    color: self.canvas.fgColor,
+			    cap: self.settings.linecap.val
+		    }
+        };
+    };
+    
+    self.drawOverlay = function(data, ctx) {
+        self.draw(data, ctx);
+    };
+    
+	self.draw = function(data, ctx) {
+	    ctx.lineCap = data.config.cap;
+		ctx.beginPath();
+		ctx.moveTo(data.start.x, data.start.y);
+		ctx.lineTo(data.end.x, data.end.y);
+		ctx.lineWidth = data.config.width;
+		ctx.strokeStyle = data.config.color;
+		ctx.stroke();
+	};
 
 	self.setCanvas = function(c) {
 		self.canvas = c;
-	}
+	};
 }
 
 var tool = new LineTool();
 tools[tool.name] = tool;
 
-console.log("PENCIL LOADED");
+console.log("LINE TOOL LOADED");

@@ -52,32 +52,15 @@ function Pencil() {
 		}
 	}
 
-	self.draw = function(data) {
+	self.draw = function(data, ctx) {
 	    // Draw regular
-		self.canvas.ctx.beginPath();
-		self.canvas.ctx.lineCap="round";
-		self.canvas.ctx.moveTo(data.start.x, data.start.y);
-		self.canvas.ctx.lineTo(data.end.x, data.end.y);
-		self.canvas.ctx.lineWidth = data.config.width;
-		self.canvas.ctx.strokeStyle = data.config.color;
-		self.canvas.ctx.stroke();
-		
-		// draw circle in end of line
-		/*
-		if(self.smooth && +data.config.width > 1) {
-		    self.canvas.ctx.beginPath();
-		    var cx = Math.floor(data.end.x);
-		    var cy = Math.floor(data.end.y);
-		
-		    
-		    self.canvas.ctx.arc(cx, cy, data.config.width/2, 0, 2*Math.PI, false);
-            self.canvas.ctx.fillStyle = data.config.color;
-			self.canvas.ctx.fill();
-		    //self.canvas.ctx.strokeStyle = data.config.color;
-		    //self.canvas.ctx.lineWidth = data.config.width;
-		    //self.canvas.ctx.stroke();
-		}
-		*/
+		ctx.beginPath();
+		ctx.lineCap = "round";
+		ctx.moveTo(data.start.x, data.start.y);
+		ctx.lineTo(data.end.x, data.end.y);
+		ctx.lineWidth = data.config.width;
+		ctx.strokeStyle = data.config.color;
+		ctx.stroke();
 	}
 
 	self.setCanvas = function(c) {
