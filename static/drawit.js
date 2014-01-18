@@ -315,10 +315,6 @@ function initSocket() {
 	socket.on('playerEvent', function(data) {
 		data.message = data.name + (data.left?' left':' joined');
 		addToChat(data);
-		$("#partListWrapperList").empty();	
-		for(var i = 0; i < data.plist.length; i++) {
-			$("<li>").text(data.plist[i]).appendTo("#partListWrapperList");
-		}
 	});
 
     socket.on('join', function(data) {
@@ -340,6 +336,13 @@ function initSocket() {
     socket.on('reconnect', function () {
         addToChat({ sender: "Interwebs", message: "Server reconnected, trying to rejoin"});
         socket.emit('join', { name: username, room: room });
+    });
+    
+    socket.on('playerList', function(data) {
+        $("#partListWrapperList").empty();	
+		for(var i = 0; i < data.plist.length; i++) {
+			$("<li>").text(data.plist[i]).appendTo("#partListWrapperList");
+		}
     });
     
     $("#ButtonPassword").click(function(e) {

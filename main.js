@@ -37,7 +37,7 @@ server = app.listen(drawitconfig.port);
 // SOCKET.IO HANDLING
 io = require('socket.io').listen(server, {log: false});
 io.on('connection', function(socket) {
-	socket.emit('chat', { sender: 'Dr4w.it', message: 'Heisann!' });
+	socket.emit('chat', { sender: 'Dr4w.it', message: 'Welcome to Dr4w.it!' });
 	
 	socket.rooms = new Array();
 
@@ -128,7 +128,8 @@ function Room(name) {
 		self.participants[socket.id] = pname;
 		var names = self.getNames();
 		dir(names);
-		io.sockets.in(self.room).emit('playerEvent', { sender: SERV_TAG, name: pname, plist: names });
+		socket.broadcast.to(self.room).emit('playerEvent', { sender: SERV_TAG, name: pname });
+		io.sockets.in(self.room).emit('playerList', { plist: names });
 	};
 
 	self.removeParticipant = function(socket) {

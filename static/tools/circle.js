@@ -6,12 +6,13 @@ function CircleTool() {
 	self.icon = "/images/icons/circleTool.png";
 	self.mouse = false;	
 	self.prevPos = null;
+	
     self.settings = {
         'fill': {
             type: types.bool,
             name: 'circle-fill',
             text: 'Fill',
-            val: true
+            val: false
         },
         'sameColor': {
             type: types.bool,
@@ -65,6 +66,9 @@ function CircleTool() {
 				if(self.mouse) {
 				}
 				break;
+		    case inputEvents.leave:
+		        self.mouse = false;
+		        break;
 		}
 	}
 
