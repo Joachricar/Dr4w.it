@@ -52,9 +52,10 @@ function Pencil() {
 						name: "circle",
 						config: { 
 							width: 2,
-							fgcolor: "#000000",
+							fgcolor: self.canvas.fgColor,
 							fill: false,
-							samecolor: true
+							samecolor: true,
+							type: "startCorner"
 						}
 					};
 					self.canvas.drawOverlay(data);
