@@ -382,7 +382,7 @@ $(function() {
         }
     });
     $(".fpInput").keydown(function(e) {
-        if(e.key == "Enter") {
+        if(e.key == "Enter" || e.keyCode == 13 || e.which == 13) {
             $(this).nextAll(".fpButton").click();
         }
     });
@@ -496,6 +496,7 @@ function initRest() {
         $(this).draggable({ handle: $(this).children(".windowHeader")[0], constrainment: "#main", scroll: false})
             .css('left', 10 + ($(this).width()+25) * w++);
     });
+    $(".windowHeader").disableSelection();
     
     /*
 	$("#div_chat").draggable({ handle: "#chatHeader", constrainment: "#main", scroll: false })
@@ -505,7 +506,7 @@ function initRest() {
 	$("#div_part_list").draggable( { handle: "#partListHeader", constrainment: "#main", scroll: false});
 	$("#div_settings").draggable({ handle: "#settingsHeader", constrainment: "#main", scroll: false });
 	*/
-	$(".windowHeader").disableSelection();
+	
     
     buildSettingsPage();
 	loadTools();

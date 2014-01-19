@@ -15,7 +15,7 @@ function TextTool() {
             name: 'texttool-font-size',
             val: 16,
             min: 8,
-            max: 60
+            max: 120
         },
         'font_weight': {
             type: types.option,

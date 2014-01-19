@@ -111,6 +111,8 @@ a {
 .tool-button {
     background-color: #FFC675;
     border: solid 1px #FFC675;
+    width: 35px;
+    height: 35px;
 }
 
 .selected-tool-button {
