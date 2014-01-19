@@ -154,10 +154,8 @@ function ArrowTool() {
         if(fill) {
             ctx.lineTo(arrowUpEnd.x, arrowUpEnd.y);
             ctx.stroke();
-            
             ctx.lineTo(point.x, point.y);
             ctx.stroke();
-            
             ctx.closePath();
             ctx.fill();
         }

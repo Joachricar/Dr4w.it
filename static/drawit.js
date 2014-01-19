@@ -233,7 +233,11 @@ function Canvas() {
 
 		socket.emit('event', fullData);
 	}
-
+    
+    self.keyup = function(e) {
+        
+    }
+    
     self.drawOverlay = function(data) {
         //self.overlay.save();
         if(settings.useOverlay.val) {
@@ -371,7 +375,8 @@ $(function() {
 		.mouseup(canvas.mouseup)
 		.mousemove(canvas.mousemove)
 		.mouseleave(canvas.mouseleave)
-		.mouseenter(canvas.mouseenter);
+		.mouseenter(canvas.mouseenter)
+		.keyup(canvas.keyup);
     
     loadSettingsForTool(cookieStrings.settings, settings);
     
@@ -650,9 +655,17 @@ function createTextInputWithPlaceholder(val, text, name, div, func) {
         'id': name,
         'placeholder': text,
         'value': val})
-		.keyup(function() {
+		.keyup(function(e) {
+		    //console.log(e.which);
 		    func($(this).val());
+		    
 	}).appendTo(div);
+	/*
+	$(window).keydown(function(e) {
+	    $(inp).trigger(e);
+	    e.stopPropagation();
+	});
+	*/
 }
 
 function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}

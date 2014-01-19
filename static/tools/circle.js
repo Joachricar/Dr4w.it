@@ -27,6 +27,17 @@ function CircleTool() {
             val: 2,
             min: 2,
             max: 40
+        },
+        'type': {
+            type: types.option,
+            name: 'circleType',
+            text: 'From',
+            options: [
+                { name: "startCorner", text: "Start Corner" },
+                { name: "start", text: "Start" },
+                { name: "center", text: "Center" },
+            ],
+            val: 'start'
         }
     };
     
@@ -63,7 +74,8 @@ function CircleTool() {
 				bgcolor: self.canvas.bgColor,
 				fgcolor: self.canvas.fgColor,
 				samecolor: self.settings.sameColor.val,
-				fill: self.settings.fill.val
+				fill: self.settings.fill.val,
+				type: self.settings.type.val
 			}
 		};
     };
@@ -74,12 +86,40 @@ function CircleTool() {
     
 	self.draw = function(data, ctx) {
 		ctx.beginPath();
-		var cx = Math.floor((data.start.x+data.end.x)/2);
-		var cy = Math.floor((data.start.y+data.end.y)/2);
-		
 		ctx.fillStyle = (data.config.samecolor?data.config.fgcolor:data.config.bgcolor);
 		
-		var rad = Math.min(Math.abs(cx-data.start.x),Math.abs(cy-data.start.y));
+		var cx, cy, rad;
+		if(data.config.type == "center") {
+		    cx = data.start.x;
+		    cy = data.start.y;
+		    
+		    var oEnd = {};
+		    oEnd.x = Math.abs(data.end.x-data.start.x);
+		    oEnd.y = Math.abs(data.end.y-data.start.y);
+		    
+		    rad = Math.sqrt(Math.pow(oEnd.x, 2) + Math.pow(oEnd.y, 2));
+		} else if(data.config.type == "startCorner") {
+		    cx = Math.floor((data.start.x+data.end.x)/2);
+		    cy = Math.floor((data.start.y+data.end.y)/2);
+		    rad = Math.min(Math.abs(cx-data.start.x),Math.abs(cy-data.start.y));
+		} else if(data.config.type == "start") {
+		    
+		    
+		    var oEnd = {};
+		    oEnd.x = data.end.x-data.start.x;
+		    oEnd.y = data.end.y-data.start.y;
+		    
+		    
+		    rad = Math.sqrt(Math.pow(oEnd.x, 2) + Math.pow(oEnd.y, 2))/2;
+		    
+		    var min = Math.min(oEnd.x, oEnd.y);
+		    var norm = {};
+		    norm.x = oEnd.x/min;
+		    norm.y = oEnd.y/min;
+		    cx = data.start.x + (oEnd.x/2);
+		    cy = data.start.y + (oEnd.y/2);
+		}
+		
 		ctx.arc(cx, cy, rad, 0, 2*Math.PI, false);
 		if(data.config.fill)
 			ctx.fill();
