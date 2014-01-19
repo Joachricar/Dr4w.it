@@ -12,6 +12,7 @@ var types = {
     bool: 0,
     range: 1,
     option: 2,
+    string: 3
 };
 
 var settings = {
@@ -104,6 +105,11 @@ function createViewForSetting(setting, div) {
 	        });
 	        $("<br>").appendTo(div);
 	        break;
+	    case types.string:
+            createTextInputWithPlaceholder(setting.val, setting.text, setting.name, div, function(val) {
+                setting.val = val;
+            });
+            $("<br>").appendTo(div);  
     }
 }
 
@@ -634,6 +640,18 @@ function createSelectWithLabel(val, options, text, name, div, func) {
         }
     }
     return s;
+}
+
+function createTextInputWithPlaceholder(val, text, name, div, func) {
+    var inp = $("<input>").attr({
+        'type': 'text',
+        'name': name,
+        'id': name,
+        'placeholder': text,
+        'value': val})
+		.keyup(function() {
+		    func($(this).val());
+	}).appendTo(div);
 }
 
 function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}
