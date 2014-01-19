@@ -485,12 +485,20 @@ function initRest() {
 		}
 	});
 
+    var w = 0;
+    $(".window").each(function() {
+        $(this).draggable({ handle: $(this).children(".windowHeader")[0], constrainment: "#main", scroll: false})
+            .css('left', 10 + ($(this).width()+25) * w++);
+    });
+    
+    /*
 	$("#div_chat").draggable({ handle: "#chatHeader", constrainment: "#main", scroll: false })
 	.css({ 'top': 5, 'right': 5}); // start chat in upper right corner
 		
 	$("#toolMenu").draggable({ handle: "#toolMenuHeader", constrainment: "#main", scroll: false});
 	$("#div_part_list").draggable( { handle: "#partListHeader", constrainment: "#main", scroll: false});
 	$("#div_settings").draggable({ handle: "#settingsHeader", constrainment: "#main", scroll: false });
+	*/
 	$(".windowHeader").disableSelection();
     
     buildSettingsPage();
