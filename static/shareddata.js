@@ -15,5 +15,7 @@ var socketEvents = {
     reconnect: 'reconnect',
     playerList: 'playerList',
     createRoom: 'createRoom',
-    createResponse: 'createResponse'
+    createResponse: 'createResponse',
+    imageDataRequest: 'getImgData',
+    imageDataReceived: 'imgDataRec'
 };

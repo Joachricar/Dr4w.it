@@ -62,16 +62,39 @@ io.on('connection', function(socket) {
             }
         }
     });
+
     
-	function joined(data) {
+    function joined(data) {
+	    socket.join(data.room);
+	    
 		if(!rooms[data.room]) {
 			rooms[data.room] = new Room(data.room);
 		}
+		
 		rooms[data.room].addParticipant(socket, data.name);
-		socket.rooms.push(data.room);
-		socket.join(data.room);
+		// socket.rooms.push(data.room);
 	}
-
+    
+    socket.on(socketEvents.imageDataRequest, function(data) {
+	    if(rooms[data.room].participants.length > 0) { 
+	        // get from first in room
+	        // TODO do some better picking
+	        var req = {
+	            room: data.room,
+	            to: socket.id
+	        }
+	        var first = Object.keys(rooms[data.room].participants)[0];
+	        io.sockets.socket(first).emit(socketEvents.imageDataRequest, data);
+	    }
+	    else { // no data to send
+	        socket.emit(imageDataReceived, {});
+	    }
+    });
+    
+    socket.on(socketEvents.imageDataReceived, function(data) {
+        io.sockets.socket(data.to).emit(data);
+    });
+    
 	socket.on(socketEvents.chat, function(data) {
 		io.sockets.in(data.room).emit(socketEvents.chat, data);
 	});
@@ -129,8 +152,8 @@ function Room(name) {
 		self.participants[socket.id] = pname;
 		var names = self.getNames();
 		dir(names);
-		socket.broadcast.to(self.room).emit(socketEvents.playerEvent, { sender: SERV_TAG, name: pname });
-		io.sockets.in(self.room).emit(socketEvents.playerList, { plist: names });
+		socket.broadcast.to(self.name).emit(socketEvents.playerEvent, { sender: SERV_TAG, name: pname });
+		io.sockets.in(self.name).emit(socketEvents.playerList, { plist: names });
 	};
 
 	self.removeParticipant = function(socket) {
@@ -138,12 +161,14 @@ function Room(name) {
 		delete self.participants[socket.id];
 		var names = self.getNames();
 		log(names);
-		io.sockets.in(self.room).emit(socketEvents.playerEvent, { 
+		
+		io.sockets.in(self.name).emit(socketEvents.playerEvent, { 
 				sender: SERV_TAG, 
 				left: true,
 				name: pname }
 		);
-		io.sockets.in(self.room).emit(socketEvents.playerList, { plist: names });
+		
+		io.sockets.in(self.name).emit(socketEvents.playerList, { plist: names });
 	};
 	
     self.checkPassword = function(pass) {

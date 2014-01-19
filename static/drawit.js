@@ -267,6 +267,10 @@ function Canvas() {
 	        //self.overlay.restore();
 	    }
 	}
+	
+	self.fillImageData = function(data) {
+	    self.ctx.putImageData(0, 0, data.data);
+	}
 }
 
 function setForeground(color) {
@@ -470,6 +474,23 @@ function initSocket() {
 		for(var i = 0; i < data.plist.length; i++) {
 			$("<li>").text(data.plist[i]).appendTo("#partListWrapperList");
 		}
+    });
+    
+    socket.on(socketEvents.imageDataRequest, function(data) { 
+        var img = canvas.ctx.getImageData(0, 0, canvas.ctx.canvas.width, canvas.ctx.canvas.height);
+        
+        socket.emit(socketEvents.imageDataResponse,
+            {
+                room: data.room,
+                to: data.to,
+                data: img,
+                size: {x: canvas.ctx.canvas.width, y: canvas.ctx.canvas.height}
+            });
+    });
+    
+    socket.on(socketEvents.imageDataResponse, function(data) { 
+        var data = canvas.ctx.getImageData(0, 0, canvas.ctx.canvas.width, canvas.ctx.canvas.height);
+        canvas.fillImageData(data);
     });
     
     $("#ButtonPassword").click(function(e) {
