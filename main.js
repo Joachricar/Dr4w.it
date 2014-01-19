@@ -1,4 +1,8 @@
-var logging = true;
+var logging = false;
+
+if(process.argv[2] == "d") 
+    logging = true;
+
 var express = require('express'),
     app = express();
 
