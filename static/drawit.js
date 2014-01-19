@@ -586,7 +586,8 @@ function initRest() {
 	}).text("X");
 
 	$("#partListClose").click(); // to hide by default
-    $("#settingsHeaderClose").click();
+    //$("#settingsHeaderClose").click();
+    
 	$("#fgColor").change(function() {
 		canvas.fgColor = $("#fgColor").val();
 	}).val(canvas.fgColor);
