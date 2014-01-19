@@ -1,4 +1,4 @@
-var logging = false;
+var logging = true;
 var express = require('express'),
     app = express();
 
@@ -72,27 +72,32 @@ io.on('connection', function(socket) {
 		}
 		
 		rooms[data.room].addParticipant(socket, data.name);
-		// socket.rooms.push(data.room);
+		socket.rooms.push(data.room);
 	}
     
     socket.on(socketEvents.imageDataRequest, function(data) {
-	    if(rooms[data.room].participants.length > 0) { 
+	    var first = Object.keys(rooms[data.room].participants)[0];
+	    
+	    if(first != undefined && first != socket.id) { 
 	        // get from first in room
 	        // TODO do some better picking
 	        var req = {
 	            room: data.room,
 	            to: socket.id
 	        }
-	        var first = Object.keys(rooms[data.room].participants)[0];
-	        io.sockets.socket(first).emit(socketEvents.imageDataRequest, data);
+	        
+	        log(socket.id + " requesting image data from " + first);       
+	        io.sockets.socket(first).emit(socketEvents.imageDataRequest, req);
 	    }
 	    else { // no data to send
-	        socket.emit(imageDataReceived, {});
+	        log(socket.id + " asked for image data, but the room is empty");    
+	        socket.emit(socketEvents.imageDataReceived, {});
 	    }
     });
     
     socket.on(socketEvents.imageDataReceived, function(data) {
-        io.sockets.socket(data.to).emit(data);
+        log("Image data from " + socket.id + " to " + data.to);
+        io.sockets.socket(data.to).emit(socketEvents.imageDataReceived, data);
     });
     
 	socket.on(socketEvents.chat, function(data) {
@@ -151,7 +156,7 @@ function Room(name) {
 	self.addParticipant = function(socket, pname) {
 		self.participants[socket.id] = pname;
 		var names = self.getNames();
-		dir(names);
+		//dir(names);
 		socket.broadcast.to(self.name).emit(socketEvents.playerEvent, { sender: SERV_TAG, name: pname });
 		io.sockets.in(self.name).emit(socketEvents.playerList, { plist: names });
 	};
@@ -160,10 +165,10 @@ function Room(name) {
 		var pname = self.participants[socket.id];
 		delete self.participants[socket.id];
 		var names = self.getNames();
-		log(names);
+		//log(names);
 		
 		io.sockets.in(self.name).emit(socketEvents.playerEvent, { 
-				sender: SERV_TAG, 
+				sender: SERV_TAG,
 				left: true,
 				name: pname }
 		);

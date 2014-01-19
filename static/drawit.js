@@ -269,7 +269,25 @@ function Canvas() {
 	}
 	
 	self.fillImageData = function(data) {
-	    self.ctx.putImageData(0, 0, data.data);
+	    /*
+	    var imgdata = self.ctx.createImageData(data.size.x, data.size.y);
+	    
+	    imgdata.data = data.data;
+	    
+	    for(var i = 0; i < data.size.x*data.size.y*4; i++) {
+	        imgdata.data[i] = data.data[i];
+	    }
+	    */
+	    var img = new Image();
+	    
+	    img.onload = function(){
+	        self.ctx.drawImage(img, 0, 0);
+	    }
+	    img.src = data.data;
+	}
+	
+	self.getImageURL = function() {
+	    return self.ctx.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 	}
 }
 
@@ -453,6 +471,7 @@ function initSocket() {
         if(data.accept) {
             $("#PasswordDialog").dialog("close");
             initRest();
+            socket.emit(socketEvents.imageDataRequest, { room: room });
         }
         else {
             $("#PasswordDialogMessage").text(data.message);
@@ -477,20 +496,26 @@ function initSocket() {
     });
     
     socket.on(socketEvents.imageDataRequest, function(data) { 
-        var img = canvas.ctx.getImageData(0, 0, canvas.ctx.canvas.width, canvas.ctx.canvas.height);
+        console.log("imgdata requested from " + data.to);
+        var img = canvas.ctx.getImageData(0, 0, canvas.ctx.canvas.width, canvas.ctx.canvas.height).data;
         
-        socket.emit(socketEvents.imageDataResponse,
-            {
+        socket.emit(socketEvents.imageDataReceived, {
                 room: data.room,
                 to: data.to,
-                data: img,
+                data: canvas.getImageURL(),
                 size: {x: canvas.ctx.canvas.width, y: canvas.ctx.canvas.height}
             });
     });
     
-    socket.on(socketEvents.imageDataResponse, function(data) { 
-        var data = canvas.ctx.getImageData(0, 0, canvas.ctx.canvas.width, canvas.ctx.canvas.height);
-        canvas.fillImageData(data);
+    socket.on(socketEvents.imageDataReceived, function(data) { 
+        
+        if(!data.data)
+            console.log("no imageData");
+        else {
+            console.log("imgdata received");
+            canvas.fillImageData(data);
+        }
+        //var data = canvas.ctx.getImageData(0, 0, canvas.ctx.canvas.width, canvas.ctx.canvas.height);
     });
     
     $("#ButtonPassword").click(function(e) {
