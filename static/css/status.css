@@ -1,44 +1,111 @@
-/*
-Syntax error: Invalid CSS after "@include ": expected identifier, was "'_vars';"
-        on line 1 of sass-css/status.scss
+body {
+  font-family: Ubuntu, sans-serif; }
 
-1: @include '_vars';
-2: @include '_default';
-3: @include 'front';
-4: 
-5: .roomNameDiv {
-6:     box-sizing:border-box;
+.fpInput {
+  width: 100%;
+  height: 40px;
+  font-size: 20px;
+  padding: 5px;
+  border: solid 1px #98959e; }
 
-Backtrace:
-sass-css/status.scss:1
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:1149:in `expected'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:1085:in `expected'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:1080:in `tok!'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:190:in `include_directive'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:174:in `special_directive'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:146:in `directive'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:553:in `block_child'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:543:in `block_contents'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:82:in `stylesheet'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:27:in `parse'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/engine.rb:342:in `_to_tree'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/engine.rb:315:in `_render'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/engine.rb:262:in `render'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/plugin/compiler.rb:362:in `update_stylesheet'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/plugin/compiler.rb:203:in `block in update_stylesheets'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/plugin/compiler.rb:201:in `each'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/plugin/compiler.rb:201:in `update_stylesheets'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/plugin/compiler.rb:235:in `watch'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/plugin.rb:107:in `method_missing'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/exec.rb:463:in `watch_or_update'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/exec.rb:326:in `process_result'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/exec.rb:41:in `parse'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/exec.rb:21:in `parse!'
-/var/lib/gems/1.9.1/gems/sass-3.2.13/bin/sass:13:in `<top (required)>'
-/usr/local/bin/sass:23:in `load'
-/usr/local/bin/sass:23:in `<main>'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Syntax error: Invalid CSS after \"@include \": expected identifier, was \"'_vars';\"\A         on line 1 of sass-css/status.scss\A \A 1: @include '_vars';\A 2: @include '_default';\A 3: @include 'front';\A 4: \A 5: .roomNameDiv {\A 6:     box-sizing:border-box;"; }
+.fpButton {
+  background: none;
+  background-image: none;
+  width: 100%;
+  height: 40px;
+  font-size: 20px;
+  background-color: #5b7b90;
+  border: solid 1px #98959e;
+  margin-bottom: 2px; }
+
+/* CSS of the front-page */
+body {
+  font-family: Ubuntu, sans-serif; }
+
+.fpInput {
+  width: 100%;
+  height: 40px;
+  font-size: 20px;
+  padding: 5px;
+  border: solid 1px #98959e; }
+
+.fpButton {
+  background: none;
+  background-image: none;
+  width: 100%;
+  height: 40px;
+  font-size: 20px;
+  background-color: #5b7b90;
+  border: solid 1px #98959e;
+  margin-bottom: 2px; }
+
+body {
+  text-align: center;
+  /* Center in IE */
+  background-color: #5b7b90; }
+
+#main {
+  text-align: left;
+  /* reset text-align for IE */
+  margin: 0 auto;
+  /* Center in other browsers */
+  width: 400px; }
+
+.fpWrapper {
+  border: solid 3px #98959e;
+  background-color: #ffc675;
+  border-radius: 5px;
+  padding: 40px;
+  margin-top: 80px;
+  width: 100%; }
+
+#welcomeHeader {
+  color: #5b7b90; }
+
+#welcomeMessage {
+  color: #98959e; }
+
+#footer {
+  width: 100%;
+  text-align: center;
+  /* reset text-align for IE */
+  margin: 0 auto;
+  /* Center in other browsers */ }
+
+#footer a {
+  margin-left: 5px;
+  margin-right: 5px;
+  text-decoration: none;
+  color: #98959e; }
+
+.roomNameDiv {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  background-color: #5b7b90;
+  padding: 5px;
+  width: 100%;
+  font-weight: bold;
+  margin-top: 5px; }
+
+.roomNameDiv img {
+  position: relative;
+  top: 0;
+  right: 0;
+  height: 20px; }
+
+.participantListElem {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  margin-left: 5%;
+  width: 95%;
+  padding: 5px;
+  background-color: #98959e; }
+
+.participantListElem:hover, .roomNameDiv:hover {
+  text-decoration: underline; }
+
+a {
+  text-decoration: none;
+  color: inherit; }

@@ -1,6 +1,6 @@
-@include '_vars';
-@include '_default';
-@include 'front';
+@import '_vars';
+@import '_default';
+@import 'front';
 
 .roomNameDiv {
     box-sizing:border-box;

@@ -1,8 +1,8 @@
 /*
 Color palette: http://www.colourlovers.com/palette/3205418/Mykonos
 */
-@include '_vars';
-@include '_default';
+@import '_vars';
+@import '_default';
 
 body {
 	height: 98%;
