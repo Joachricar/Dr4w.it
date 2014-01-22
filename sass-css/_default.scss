@@ -1,0 +1,22 @@
+body {
+    font-family: Ubuntu, sans-serif;
+}
+
+.fpInput {
+    width: 100%;
+    height: $fp-input-height;
+    font-size: $fp-input-font-size;
+    padding: 5px;
+    border: solid 1px $input-border-color;
+}
+
+.fpButton {
+    background: none;
+    background-image: none;
+    width: 100%;
+    height: $fp-input-height;
+    font-size: $fp-input-font-size;
+    background-color: $button-bg-color;
+    border: solid 1px $button-border-color;
+    margin-bottom: 2px;
+}

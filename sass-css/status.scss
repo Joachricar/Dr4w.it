@@ -1,0 +1,41 @@
+@include '_vars';
+@include '_default';
+@include 'front';
+
+.roomNameDiv {
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    background-color: $status-room-name-bg-color;
+    padding: 5px;
+    width: 100%;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.roomNameDiv img {
+    position:relative;
+    top:0;
+    right:0;
+    height: 20px;
+}
+
+.participantListElem {
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    margin-left: 5%;
+    width: 95%;
+    padding: 5px;
+    background-color: $status-participant-bg-color;
+}
+
+.participantListElem:hover, .roomNameDiv:hover {
+    text-decoration: underline;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+

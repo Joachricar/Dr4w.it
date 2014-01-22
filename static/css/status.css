@@ -1,0 +1,44 @@
+/*
+Syntax error: Invalid CSS after "@include ": expected identifier, was "'_vars';"
+        on line 1 of sass-css/status.scss
+
+1: @include '_vars';
+2: @include '_default';
+3: @include 'front';
+4: 
+5: .roomNameDiv {
+6:     box-sizing:border-box;
+
+Backtrace:
+sass-css/status.scss:1
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:1149:in `expected'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:1085:in `expected'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:1080:in `tok!'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:190:in `include_directive'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:174:in `special_directive'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:146:in `directive'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:553:in `block_child'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:543:in `block_contents'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:82:in `stylesheet'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/scss/parser.rb:27:in `parse'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/engine.rb:342:in `_to_tree'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/engine.rb:315:in `_render'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/engine.rb:262:in `render'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/plugin/compiler.rb:362:in `update_stylesheet'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/plugin/compiler.rb:203:in `block in update_stylesheets'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/plugin/compiler.rb:201:in `each'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/plugin/compiler.rb:201:in `update_stylesheets'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/plugin/compiler.rb:235:in `watch'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/plugin.rb:107:in `method_missing'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/exec.rb:463:in `watch_or_update'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/exec.rb:326:in `process_result'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/exec.rb:41:in `parse'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/lib/sass/exec.rb:21:in `parse!'
+/var/lib/gems/1.9.1/gems/sass-3.2.13/bin/sass:13:in `<top (required)>'
+/usr/local/bin/sass:23:in `load'
+/usr/local/bin/sass:23:in `<main>'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Invalid CSS after \"@include \": expected identifier, was \"'_vars';\"\A         on line 1 of sass-css/status.scss\A \A 1: @include '_vars';\A 2: @include '_default';\A 3: @include 'front';\A 4: \A 5: .roomNameDiv {\A 6:     box-sizing:border-box;"; }

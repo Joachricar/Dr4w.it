@@ -1,0 +1,45 @@
+/* CSS of the front-page */
+@import '_vars';
+@import '_default';
+
+body {
+    text-align: center; /* Center in IE */
+    background-color: $background-color;
+}
+
+#main {
+    text-align: left; /* reset text-align for IE */
+    margin: 0 auto; /* Center in other browsers */
+    width: 400px;
+    
+}
+
+.fpWrapper {
+   border: solid 3px $window-border-color;
+   background-color: $window-background-color;
+   border-radius: 5px;
+   padding: 40px;
+   margin-top: 80px;
+   width: 100%;
+}
+
+#welcomeHeader {
+    color: $h1-color;
+}
+
+#welcomeMessage {
+    color: $h2-color;
+}
+
+#footer {
+    width: 100%;
+    text-align: center; /* reset text-align for IE */
+    margin: 0 auto; /* Center in other browsers */
+}
+
+#footer a {
+    margin-left: 5px;
+    margin-right: 5px;
+    text-decoration: none;
+    color: $h2-color;
+}

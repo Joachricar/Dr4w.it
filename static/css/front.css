@@ -1,0 +1,59 @@
+/* CSS of the front-page */
+body {
+  font-family: Ubuntu, sans-serif; }
+
+.fpInput {
+  width: 100%;
+  height: 40px;
+  font-size: 20px;
+  padding: 5px;
+  border: solid 1px #98959e; }
+
+.fpButton {
+  background: none;
+  background-image: none;
+  width: 100%;
+  height: 40px;
+  font-size: 20px;
+  background-color: #5b7b90;
+  border: solid 1px #98959e;
+  margin-bottom: 2px; }
+
+body {
+  text-align: center;
+  /* Center in IE */
+  background-color: #5b7b90; }
+
+#main {
+  text-align: left;
+  /* reset text-align for IE */
+  margin: 0 auto;
+  /* Center in other browsers */
+  width: 400px; }
+
+.fpWrapper {
+  border: solid 3px #98959e;
+  background-color: #ffc675;
+  border-radius: 5px;
+  padding: 40px;
+  margin-top: 80px;
+  width: 100%; }
+
+#welcomeHeader {
+  color: #5b7b90; }
+
+#welcomeMessage {
+  color: #98959e; }
+
+#footer {
+  width: 100%;
+  text-align: center;
+  /* reset text-align for IE */
+  margin: 0 auto;
+  /* Center in other browsers */ }
+
+#footer a {
+  margin-left: 5px;
+  margin-right: 5px;
+  text-decoration: none;
+  color: #98959e; }
